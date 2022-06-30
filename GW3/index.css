@@ -9,6 +9,7 @@ ul.menu {
   display: flex;
 }
 li.menu {
+  background-color: #73d0df50;
   list-style: none;
 }
 a {
