@@ -28,5 +28,8 @@ width: 100%;
 height: auto;
 }
 
+.box {
+  display: flex;
+}
 .div-a{ float:left;width:49%;display: table-cell;} 
 .div-b{ float:right;width:49%;display: table-cell;} 
