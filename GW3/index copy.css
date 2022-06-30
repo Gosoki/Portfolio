@@ -1,0 +1,38 @@
+li{
+    color:black;
+    background-color: #73d0df50;
+  }
+  
+
+nav {
+    width: 100%;
+    height: 70px;
+    background-color: darkgray;
+    padding-top: 5px;
+    box-sizing: border-box;
+  }
+  ul.menu {
+    display: flex;
+  }
+  li.menu {
+    list-style: none;
+  }
+  a {
+    display: block;
+    text-decoration: none;
+    color: white;
+    margin-right: 35px;
+  }
+
+  footer{
+    text-align: center;
+  }
+
+.imgg{
+    display: block;
+}
+
+.style{
+  display: inline-block;
+  vertical-align: top;
+}
