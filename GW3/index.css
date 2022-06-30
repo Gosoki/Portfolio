@@ -26,3 +26,9 @@ nav {
   footer{
     text-align: center;
   }
+
+.imgg{
+    display: block;
+    display: inline-block;
+    vertical-align: top;
+}
