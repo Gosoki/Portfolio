@@ -28,5 +28,5 @@ width: 100%;
 height: auto;
 }
 
-.div-a{ float:left;width:49%;border:1px solid #F00} 
-.div-b{ float:right;width:49%;border:1px solid #000} 
+.div-a{ float:left;width:49%;display: table-cell;} 
+.div-b{ float:right;width:49%;display: table-cell;} 
