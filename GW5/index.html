@@ -16,6 +16,9 @@
             <li class="menu"><a href="#field">Field</a></li>
             <li class="menu"><a href="#works">Works</a></li>
             <li class="menu"><a href="#contact">Contact</a></li>
+            <li class="icon">
+                <a href="javascript:void(0);" style="font-size:15px;" onclick="myFunction()">☰</a>
+            </li>
         </ul>
     </nav>
     <div class="box">
@@ -76,5 +79,10 @@
 
     <footer>©︎2022 Gosoki</footer>
 </body>
-
+	
+<script type="text/javascript">
+function myFunction() {
+    document.getElementsByClassName("topnav")[0].classList.toggle("responsive");
+}
+</script>
 </html>
