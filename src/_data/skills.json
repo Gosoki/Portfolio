@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Python",
+    "percent": 85,
+    "detail": "Webapp: Flask, Gradio, Streamlit;<br>Machine Learning: PyTorch, Tensorflow, Pandas, Numpy, ML-Agents;"
+  },
+  {
+    "name": "C#",
+    "percent": 60,
+    "detail": "Unityのクリプトを書く、ML-Agentsと連携"
+  },
+  {
+    "name": "SQL",
+    "percent": 60,
+    "detail": "SQLの基本構文、テーブルの作成と管理、複数のテーブルの操作と結合、トリガーの使用"
+  },
+  {
+    "name": "JavaScript",
+    "percent": 75,
+    "detail": "JSの基本構文、DOM、非同期プログラミング、AjaxとHTTPリクエスト"
+  },
+  {
+    "name": "Java",
+    "percent": 30,
+    "detail": "Javaの基本構文"
+  },
+  {
+    "name": "PHP",
+    "percent": 50,
+    "detail": "データベースと連携、Webアプリ作成"
+  },
+  {
+    "name": "Unity",
+    "percent": 60,
+    "detail": "ML-Agents環境作成、ＨＭＤ開発、マルチプレイヤーゲーム"
+  },
+  {
+    "name": "Stable diffusion",
+    "percent": 75,
+    "detail": "モデルの作成（訓練）、画像＆音声の生成"
+  },
+  {
+    "name": "Zscaler",
+    "percent": 30,
+    "detail": "Zscaler Admin Portal,ZIA,ZPAの基本知識"
+  },
+  {
+    "name": "TypeScript",
+    "percent": 50,
+    "detail": "基本構文、React、Vue.js、Node.js"
+  },
+  {
+    "name": "C++",
+    "percent": 30,
+    "detail": "基本構文、iot開発、browser C++拡張"
+  },
+  {
+    "name": "Elixir",
+    "percent": 30,
+    "detail": "基本構文、APIサーバー構築"
+  },
+  {
+    "name": "NetWork",
+    "percent": 60,
+    "detail": "基本知識(TCP/IP,HTTPs); ファイアウォール、ルーター、スイッチ(Vlan)の設定; VPN構築"
+  },
+  {
+    "name": "Server",
+    "percent": 60,
+    "detail": "基本知識(Linux,Windows); FTP,SSH,NFS,SMB,Nginx,IISの設定; 分布式システム,マルチユーザー管理;"
+  },
+  {
+    "name": "AutoCAD",
+    "percent": 85,
+    "detail": "機械や部品、建築物(住宅、オフィス)の設計図"
+  },
+  {
+    "name": "Photoshop",
+    "percent": 85,
+    "detail": "画像処理、画像合成"
+  },
+  {
+    "name": "3ds Max",
+    "percent": 75,
+    "detail": "機械や部品、建築物(住宅、オフィス)のモデリング＆イメージ図"
+  },
+  {
+    "name": "Sketchup",
+    "percent": 85,
+    "detail": "機械や部品、建築物(住宅、オフィス)のモデリング＆イメージ図"
+  },
+  {
+    "name": "IoT開発",
+    "percent": 60,
+    "detail": "ESP32(Arduino)/Raspberry Pi(Linux)開発経験がある"
+  },
+  {
+    "name": "Cloud開発",
+    "percent": 70,
+    "detail": "AWS(EC2/Cloud9),GCP(GCE)のクラウド開発経験があり、AzureのAPI利用経験がある"
+  },
+  {
+    "name": "Webアプリ開発",
+    "percent": 70,
+    "detail": "Python,PHP,Node.jsでWebアプリケーション構築"
+  },
+  {
+    "name": "Android開発",
+    "percent": 50,
+    "detail": "複合現実App開発経験がある"
+  },
+  {
+    "name": "Hololens開発",
+    "percent": 50,
+    "detail": "複合現実App開発経験がある"
+  },
+  {
+    "name": "Oculus開発",
+    "percent": 50,
+    "detail": "メタバース（VR）のApp開発経験がある"
+  }
+]

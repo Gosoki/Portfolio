@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang }}" class="no-js">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	{#- サイト全体の情報は _data/site.json にまとめてある。ドメイン変更はそこ 1 か所で済む #}
+	<meta name="description" content="{{ site.description }}" />
+	<meta name="author" content="{{ site.author }}" />
+	<meta name="theme-color" content="{{ site.themeColor }}" />
+	<link rel="canonical" href="{{ site.url }}/" />
+	<link rel="icon" type="image/png" href="{{ site.ogImage }}" />
+	<link rel="apple-touch-icon" href="{{ site.ogImage }}" />
+
+	<title>{{ site.title }}</title>
+
+	<!-- Open Graph / Twitter -->
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="{{ site.title }}" />
+	<meta property="og:title" content="{{ site.title }}" />
+	<meta property="og:description" content="{{ site.shortDescription }}" />
+	<meta property="og:url" content="{{ site.url }}/" />
+	<meta property="og:image" content="{{ site.url }}/{{ site.ogImage }}" />
+	<meta property="og:locale" content="ja_JP" />
+	<meta name="twitter:card" content="summary" />
+
+	<link rel="preconnect" href="https://ae01.alicdn.com" crossorigin />
+
+	<link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+	<link href="assets/css/font-awesome.min.css" rel="stylesheet" media="screen" />
+	<link href="assets/css/simple-line-icons.css" rel="stylesheet" media="screen" />
+	<link href="assets/css/animate.css" rel="stylesheet" />
+	<link href="assets/css/style.css" rel="stylesheet" media="screen" />
+	<link href="assets/css/custom.css" rel="stylesheet" />
+	<script>
+		/* JS が有効なときだけ .js-enabled を付ける。
+		   無効なら .wow の visibility:hidden が当たらず、本文がそのまま見える。
+		   no-js / js クラスは Modernizr が管理するので触らない */
+		document.documentElement.className += ' js-enabled';
+	</script>
+	<script src="assets/js/modernizr.custom.js"></script>
+</head>
+
+<body class="loading">
+	<!-- ローディング画面 -->
+	<div class="loader-wrapper">
+		<div class="loader"></div>
+	</div>
+	<section id="home" class="pfblock-image screen-height">
+		<div class="home-overlay"></div>
+		<div class="intro">
+			<img class="intro-avatar" src="img/me.png" width="200" height="200" decoding="async"
+				alt="呉 祖熙のプロフィール写真" />
+
+			<h1>
+				<ruby>呉 祖熙<rp>（</rp><rt>ゴ ソキ</rt><rp>）</rp></ruby>
+			</h1>
+
+			<div class="start">Portfolio<br /><br />未知の高みへ向かって</div>
+		</div>
+
+		<a href="#about" aria-label="About セクションへ移動">
+			<div class="scroll-down">
+				<span>
+					<i class="fa fa-angle-down fa-2x" aria-hidden="true"></i>
+				</span>
+			</div>
+		</a>
+	</section>
+
+	<!-- Home end -->
+
+	<!-- Navigation start -->
+
+	<header class="header">
+		<nav class="navbar navbar-custom" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#custom-collapse"
+						aria-expanded="false" aria-controls="custom-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="index.html" style="font-family: sans-serif">Go soki</a>
+				</div>
+
+				<div class="collapse navbar-collapse" id="custom-collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#about">About</a></li>
+						<li><a href="#career">Career</a></li>
+						<li><a href="#skills">Skills</a></li>
+						<li><a href="#achievements">Achievements</a></li>
+						<li><a href="#works">Works</a></li>
+						<li><a href="#contact">Contact</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+
+	<!-- Navigation end -->
+
+	<!-- about start -->
+
+	<section id="about" class="pfblock pfblock-gray content-loading">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-sm-offset-3">
+					<div class="pfblock-header wow fadeInUp">
+						<h2 class="pfblock-title">About</h2>
+						<div class="pfblock-line"></div>
+						<div class="pfblock-subtitle">
+							人工知能技術を学ぶため、中国から日本に留学しました<br />
+							人が使いやすく、幅広い分野で役立つものを作りたいです
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<div class="iconbox wow slideInLeft">
+						<a href="#about">
+							<div class="iconbox-icon">
+								<span class="icon-user"></span>
+							</div>
+							<div class="iconbox-text">
+								<h3 class="iconbox-title">氏名</h3>
+							</div>
+						</a>
+						<div class="iconbox-desc">Wu Zuxi<br />呉 祖熙</div>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<div class="iconbox wow slideInLeft">
+						<a href="https://www.musashino-u.ac.jp/" target="_blank" rel="noopener noreferrer">
+							<div class="iconbox-icon">
+								<span class="icon-graduation"></span>
+							</div>
+							<div class="iconbox-text">
+								<h3 class="iconbox-title">所属</h3>
+							</div>
+						</a>
+						<div class="iconbox-desc">
+							Faculty of Data Science<br />Musashino University
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<div class="iconbox wow slideInRight">
+						<a href="#works">
+							<div class="iconbox-icon">
+								<span class="icon-chemistry"></span>
+							</div>
+							<div class="iconbox-text">
+								<h3 class="iconbox-title">研究</h3>
+							</div>
+						</a>
+						<div class="iconbox-desc">
+							Real-Time通信, Diffusion model, 3D·XR·VR·AR·MR
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<div class="iconbox wow slideInRight">
+						<a href="//photo.wuzuxi.com" target="_blank" rel="noopener noreferrer">
+							<div class="iconbox-icon">
+								<span class="icon-camera"></span>
+							</div>
+
+							<div class="iconbox-text">
+								<h3 class="iconbox-title">趣味</h3>
+
+							</div>
+						</a>
+						<div class="iconbox-desc">
+							ものづくり<br />撮影 旅行.
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- about end -->
+
+	<!-- Career start -->
+	<section id="career" class="pfblock content-loading">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-sm-offset-3">
+					<div class="pfblock-header wow fadeInUp">
+						<h2 class="pfblock-title">Career</h2>
+						<div class="pfblock-line"></div>
+						<div class="pfblock-subtitle">これまでの歩み</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-xs-12">
+					{#- ノード 1 つが「一続きの経歴」。end を省くと進行中の扱いになる。
+					    項目を足すときは _data/career.json に追記するだけでよい。
+					    768px 以下では CSS 側で縦並びに切り替わる #}
+					<div class="career-track">
+						{%- for job in career %}
+						<div class="career-item wow fadeInUp{% if job.current %} is-current{% endif %}"
+							data-wow-delay="{{ (loop.index0 * 0.15) | round(2) }}s">
+							<div class="career-period">{{ job.start }}{% if job.end %} 〜 {{ job.end }}{% endif %}</div>
+							<div class="career-title">{{ job.title }}</div>
+							{%- if job.detail %}
+							<div class="career-detail">{{ job.detail | safe }}</div>
+							{%- endif %}
+							{%- if job.current %}
+							<span class="career-now">現在</span>
+							{%- endif %}
+						</div>
+						{%- endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Career end -->
+
+	<!-- Skills start -->
+	<section class="pfblock content-loading" id="skills">
+		<div class="container">
+
+			<div class="row">
+				<div class="col-sm-6 col-sm-offset-3">
+					<div class="pfblock-header wow fadeInUp">
+						<h2 class="pfblock-title">Skills</h2>
+						<div class="pfblock-line"></div>
+						<div class="pfblock-subtitle">スキルの一部</div>
+					</div>
+				</div>
+			</div>
+			<div class="row skills ">
+				{%- for skill in skills %}
+				<div class="col-xs-6 col-sm-4 col-md-2 text-center skill-item">
+					<b>{{ skill.name }}{% if loop.first %} <span class="skill-hint-dot" id="skillHintDot"></span>{% endif %}</b>
+					<div class="progress">
+						<div class="progress-bar" data-percent="{{ skill.percent }}"></div>
+					</div>
+					<div class="details">{{ skill.detail | safe }}</div>
+				</div>
+				{%- endfor %}
+			</div>
+
+			<div class="row skills">
+				<div class="col-xs-12 pfblock-header wow fadeInUp">
+					<div class="pfblock-line"></div>
+					<div class="pfblock-subtitle text-center">一般人が習得している言葉</div>
+				</div>
+
+				{%- for lang in languages %}
+				<div class="col-xs-6 col-sm-6 col-md-3 text-center lanskill-item">
+					<div data-percent="{{ lang.percent }}" class="chart easyPieChart">
+						<div class="chart-label">
+							<h3>{{ lang.name }}</h3>
+							<span class="percent">{{ lang.percent }}</span>
+						</div>
+					</div>
+					<div class="details">{{ lang.detail | safe }}</div>
+				</div>
+				{%- endfor %}
+			</div>
+
+		</div>
+	</section>
+	<!-- Skills end -->
+
+	<!-- Achievements start -->
+	<section id="achievements" class="pfblock pfblock-gray content-loading">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-sm-offset-3">
+					<div class="pfblock-header wow fadeInUp">
+						<h2 class="pfblock-title">Achievements</h2>
+						<div class="pfblock-line"></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				{#- 列は 1 つ目が左からフェードイン、2 つ目が右から。
+				    各列の 2 件目以降には自動で 0.2s の遅延が付く。
+				    項目を足すときは _data/achievements.json の items に追記するだけでよい #}
+				{%- for column in achievements %}
+				{%- set animation = "fadeInLeft" if loop.first else "fadeInRight" %}
+				<div class="col-md-6 col-sm-12">
+					<h3 class="achievement-section-title">
+						<i class="fa {{ column.icon }}" aria-hidden="true"></i> {{ column.title }}
+					</h3>
+					<div class="achievement-timeline">
+						{%- for item in column.items %}
+						<div class="achievement-item wow {{ animation }}"{% if not loop.first %} data-wow-delay="0.2s"{% endif %}>
+							<div class="achievement-year">{{ item.year }}</div>
+							<div class="achievement-content">
+								<h4>{{ item.title }}</h4>
+								<p class="achievement-venue">{{ item.venue | safe }}</p>
+								<p class="achievement-desc">{{ item.desc | safe }}</p>
+							</div>
+						</div>
+						{%- endfor %}
+					</div>
+				</div>
+				{%- endfor %}
+			</div>
+		</div>
+	</section>
+	<!-- Achievements end -->
+
+	<!-- Works start -->
+	<section id="works" class="pfblock content-loading">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-sm-offset-3">
+					<div class="pfblock-header wow fadeInUp">
+						<h2 class="pfblock-title">Works</h2>
+						<div class="pfblock-line"></div>
+						<div class="pfblock-subtitle">くだらない作品たち...<br />メタバース、遠隔共同作業、音声データ分析に取り組んでいます<br />（詳細については、クリックしてください）</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				{#- 常時表示（featured: true）が先、折りたたみが後ろ。
+				    並び替えは byFeatured フィルタがやるので、
+				    _data/works.json への追記位置は気にしなくてよい。
+				    画像を 2 枚以上入れると自動でスライドショーになる #}
+				{%- for work in works | byFeatured %}
+				<div class="col-xs-12 col-sm-6 col-md-4{% if not work.featured %} work-hidden{% endif %}">
+					<div class="grid wow zoomIn">
+						<figure class="effect-bubba">
+							{%- for image in work.images %}
+							<img{% if work.images | length > 1 %} class="mySlides"{% endif %} src="{{ image.src }}"
+								alt="{{ image.alt }}" width="{{ image.width }}" height="{{ image.height }}"
+								loading="lazy" decoding="async" />
+							{%- endfor %}
+							<a role="button" tabindex="0" class="work-link" data-work="{{ work.id }}">
+								<figcaption>
+									<h2>
+										<span>{{ work.card.title }}</span>
+									</h2>
+									<p>{{ work.card.text | safe }}</p>
+								</figcaption>
+							</a>
+						</figure>
+					</div>
+				</div>
+				{%- endfor %}
+			</div>
+
+			<!-- More button -->
+			<div class="row">
+				<div class="col-md-12 text-center" style="margin-top: 30px;">
+					<button id="moreWorksBtn" type="button" class="btn btn-lg" aria-expanded="false">
+						<span class="btn-text">More Works</span>
+						<i class="fa fa-angle-down" aria-hidden="true"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Works end -->
+
+
+	<!-- Work Modal -->
+	<div id="workModal" class="work-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+		aria-hidden="true">
+		<div class="work-modal-content">
+			<div class="work-modal-header">
+				<h2 id="modalTitle">作品詳細</h2>
+				<button type="button" class="close-modal" aria-label="閉じる">&times;</button>
+			</div>
+			<div class="work-modal-body" id="modalBody">
+				<!-- 動的コンテンツ -->
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- Footer start -->
+	<section id="contact" class="pfblock pfblock-gray content-loading" style="padding-top: 0; padding-bottom: 0"></section>
+	<footer id="footer" class="content-loading">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="pfblock-subtitle text-center">
+						Contact<br /><br />
+					</div>
+					<ul class="social-links">
+						<li>
+							<a href="//www.wuzuxi.com" target="_blank" rel="noopener noreferrer" aria-label="ホームページ"
+								class="wow fadeInUp"><i class="fa fa-home" aria-hidden="true"></i></a>
+						</li>
+						<li>
+							<a href="https://wpa.qq.com/msgrd?v=3&amp;uin=3113229168&amp;site=qq&amp;menu=yes"
+								target="_blank" rel="noopener noreferrer" aria-label="QQ"
+								class="wow fadeInUp" data-wow-delay=".2s"><i class="fa fa-qq" aria-hidden="true"></i></a>
+						</li>
+						<li>
+							<a href="https://github.com/Gosoki" target="_blank" rel="noopener noreferrer" aria-label="GitHub"
+								class="wow fadeInUp" data-wow-delay=".4s"><i class="fa fa-github" aria-hidden="true"></i></a>
+						</li>
+						<li>
+							<a href="//blog.wuzuxi.com" target="_blank" rel="noopener noreferrer" aria-label="ブログ"
+								class="wow fadeInUp" data-wow-delay=".6s"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+						</li>
+						<li>
+							<a href="mailto:i@wuzuxi.com" aria-label="メール"
+								class="wow fadeInUp" data-wow-delay=".8s"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+						</li>
+					</ul>
+					<p class="copyright">
+						Copyright © 2016-<span id="copyrightYear">2026</span>. GoSoki All rights reserved.<br />
+					</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- Footer end -->
+
+	<!-- Scroll to top -->
+	<div class="scroll-up">
+		<a href="#home" aria-label="ページ先頭へ戻る"><i class="fa fa-angle-up" aria-hidden="true"></i></a>
+	</div>
+	<!-- Scroll to top end-->
+
+	<!-- Javascript files -->
+	<script src="assets/js/jquery-1.11.1.min.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/js/jquery.sticky.js"></script>
+	<script src="assets/js/wow.min.js"></script>
+	<script src="assets/js/jquery.easypiechart.js"></script>
+	<script src="assets/js/custom.js"></script>
+	<script>
+		// 作品データ（_data/works.json から自動生成。ここは直接編集しない）
+		const worksData = {
+			{%- for work in works %}
+			{{ work.id }}: {
+				title: {{ work.title | dump | safe }},
+				keywords: {{ work.keywords | dump | safe }},
+				description: {{ work.description | dump | safe }},
+				media: {{ work.media | embedHtml(work.title) | dump | safe }}
+			}{{ "," if not loop.last }}
+			{%- endfor %}
+		};
+
+		// ---------------------------------------------------------------
+		// UI ロジック
+		// ---------------------------------------------------------------
+		(function () {
+
+			'use strict';
+
+			var raf = window.requestAnimationFrame || function (callback) {
+				return window.setTimeout(callback, 16);
+			};
+
+			// 要素が少しでもビューポートに入っているかを判定する。
+			// 以前は「要素が完全に収まっているか」を見ていたため、
+			// ビューポートより高い要素ではアニメーションが一度も発火しなかった。
+			function isInViewport(element, margin) {
+				var rect = element.getBoundingClientRect();
+				var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+				var offset = margin || 0;
+				return rect.top < viewportHeight - offset && rect.bottom > offset;
+			}
+
+			// --- スキルのプログレスバー ---------------------------------------
+
+			var animatedBars = [];
+
+			function animateProgressBars() {
+				$('.progress-bar').each(function (index) {
+					var $bar = $(this);
+
+					if ($.inArray(index, animatedBars) !== -1 || !isInViewport(this, 40)) {
+						return;
+					}
+					animatedBars.push(index);
+
+					var percent = $bar.data('percent');
+
+					setTimeout(function () {
+						$bar.css({
+							'width': percent + '%',
+							'transition': 'width 1.5s cubic-bezier(0.4, 0, 0.2, 1)'
+						});
+
+						if (percent < 60) {
+							$bar.css('background-color', '#fd7e14');
+						}
+					}, index * 100);
+				});
+			}
+
+			// --- 言語スキルの円グラフ -----------------------------------------
+
+			var languageSkillsRevealed = false;
+
+			function revealLanguageSkills() {
+				if (languageSkillsRevealed) {
+					return;
+				}
+
+				var $items = $('.lanskill-item');
+				var visible = false;
+
+				$items.each(function () {
+					if (isInViewport(this, 40)) {
+						visible = true;
+					}
+				});
+
+				if (!visible) {
+					return;
+				}
+				languageSkillsRevealed = true;
+
+				$items.each(function (index) {
+					var $item = $(this);
+					setTimeout(function () {
+						$item.addClass('show');
+					}, index * 200);
+				});
+			}
+
+			// --- ヘッダーと「先頭へ戻る」ボタン --------------------------------
+
+			var lastScrollTop = -1;
+
+			function updateChrome() {
+				var scrollTop = $(window).scrollTop();
+
+				if (Math.abs(scrollTop - lastScrollTop) <= 5) {
+					return;
+				}
+				lastScrollTop = scrollTop;
+
+				var compact = scrollTop > 100;
+
+				$('.navbar-custom').css({
+					'padding': compact ? '5px 0' : '10px 0',
+					'background': compact ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.95)'
+				});
+
+				$('.scroll-up').toggleClass('show', scrollTop > 300);
+			}
+
+			// スクロール中の処理は 1 フレームにまとめる
+			var ticking = false;
+
+			function onScroll() {
+				if (ticking) {
+					return;
+				}
+				ticking = true;
+
+				raf(function () {
+					ticking = false;
+					updateChrome();
+					animateProgressBars();
+					revealLanguageSkills();
+				});
+			}
+
+			// --- 作品モーダル -------------------------------------------------
+
+			var $modal = $('#workModal');
+			var $modalTitle = $('#modalTitle');
+			var $modalBody = $('#modalBody');
+			var lastFocusedElement = null;
+
+			var HTML_ESCAPE = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+
+			function escapeHtml(value) {
+				return String(value).replace(/[&<>"']/g, function (char) {
+					return HTML_ESCAPE[char];
+				});
+			}
+
+			function openModal(workId) {
+				var work = worksData[workId];
+
+				if (!work) {
+					return;
+				}
+
+				// 閉じるアニメーションが残っていると、その完了処理
+				// （$modalBody.empty()）が今から入れる中身を消してしまうため、
+				// 中身を組み立てる前にここで確実に終わらせておく
+				$modal.stop(true, true);
+
+				lastFocusedElement = document.activeElement;
+
+				var keywords = $.map(work.keywords, function (keyword) {
+					return '<span class="label label-success">' + escapeHtml(keyword) + '</span>';
+				}).join('');
+
+				$modalTitle.text(work.title);
+				$modalBody.html(
+					'<div class="work-keywords"><b>Keywords: </b>' + keywords + '</div>' +
+					'<div class="work-description">' + escapeHtml(work.description) + '</div>' +
+					'<div class="work-media">' + work.media + '</div>'
+				);
+
+				// 背景のスクロールバーが消える分の横ズレを打ち消す
+				var scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+				document.documentElement.style.setProperty('--scrollbar-width', scrollbarWidth + 'px');
+
+				// 埋め込みには title が無いため、読み上げ用に補う
+				$modalBody.find('iframe').each(function (index) {
+					if (!this.getAttribute('title')) {
+						this.setAttribute('title', work.title + '（資料 ' + (index + 1) + '）');
+					}
+				});
+
+				$modal.css('display', 'flex').attr('aria-hidden', 'false');
+				$('body').addClass('modal-open');
+				$modal.find('.close-modal').focus();
+			}
+
+			function closeModal() {
+				if ($modal.attr('aria-hidden') === 'true') {
+					return;
+				}
+				$modal.attr('aria-hidden', 'true');
+
+				$modal.fadeOut(300, function () {
+					$('body').removeClass('modal-open');
+					document.documentElement.style.removeProperty('--scrollbar-width');
+
+					// iframe を破棄しないと、閉じたあとも動画が裏で再生され続ける
+					$modalBody.empty();
+
+					if (lastFocusedElement && lastFocusedElement.focus) {
+						lastFocusedElement.focus();
+					}
+				});
+			}
+
+			// --- ローディング表示 ---------------------------------------------
+
+			var LOADER_MIN_MS = 600;
+			var LOADER_MAX_MS = 4000;
+			var loaderStartedAt = Date.now();
+			var loaderHidden = false;
+
+			function hideLoader() {
+				if (loaderHidden) {
+					return;
+				}
+				loaderHidden = true;
+
+				$('.loader-wrapper').addClass('fade-out');
+				$('.content-loading').addClass('loaded');
+				$('body').removeClass('loading');
+
+				// スクロールしなくても初期表示分のアニメーションが動くよう一度判定する
+				onScroll();
+			}
+
+			// --- 初期化 -------------------------------------------------------
+
+			$(document).ready(function () {
+
+				// WOW.js が読めなかった場合、.wow の visibility:hidden で
+				// 本文が消えたままになるのを防ぐ
+				if (window.WOW) {
+					new WOW().init();
+				} else {
+					$('.wow').css('visibility', 'visible');
+				}
+
+				if ($.fn.easyPieChart) {
+					$('.chart.easyPieChart').easyPieChart({
+						// 色と太さは Skills のプログレスバー
+						// （.progress-bar #4caf50 / .progress #f1f1f1 / 高さ 14px）に合わせる。
+						// size は .chart の CSS 幅 140px と一致させること。
+						// ここが 150 だと canvas がはみ出し、中央の数字も 5px ずれる
+						barColor: '#4caf50',
+						trackColor: '#f1f1f1',
+						scaleColor: false,
+						lineWidth: 10,
+						size: 140,
+						animate: 2000
+					});
+				}
+
+				$('#copyrightYear').text(new Date().getFullYear());
+
+				// ヒントの赤い点。タッチ端末には hover が無く消えなかったため、
+				// タップとタイムアウトでも消えるようにする
+				var $hintDot = $('#skillHintDot');
+
+				function hideHintDot() {
+					$hintDot.addClass('hide');
+				}
+
+				$('.skill-item').first().on('mouseenter click', hideHintDot);
+				$('.skill-item').on('touchstart', hideHintDot);
+				setTimeout(hideHintDot, 12000);
+
+				$(window).on('scroll resize', onScroll);
+				onScroll();
+
+				// ページ内リンクのスムーススクロール（固定ヘッダーの高さ分を補正）
+				$('a[href^="#"]').not('[href="#"]').on('click', function (event) {
+					var target = $(this.getAttribute('href'));
+
+					if (!target.length) {
+						return;
+					}
+					event.preventDefault();
+
+					var headerHeight = $('.header').outerHeight() || 0;
+
+					$('html, body').stop().animate({
+						scrollTop: Math.max(0, target.offset().top - headerHeight)
+					}, 800, 'swing');
+				});
+
+				// 作品カード。role="button" なので Enter / Space でも開けるようにする
+				$('.work-link')
+					.on('click', function (event) {
+						event.preventDefault();
+						openModal($(this).data('work'));
+					})
+					.on('keydown', function (event) {
+						if (event.which === 13 || event.which === 32) {
+							event.preventDefault();
+							openModal($(this).data('work'));
+						}
+					});
+
+				$('.close-modal').on('click', closeModal);
+
+				$modal.on('click', function (event) {
+					if (event.target === this) {
+						closeModal();
+					}
+				});
+
+				$(document).on('keydown', function (event) {
+					if (event.which === 27) {
+						closeModal();
+					}
+				});
+
+				// Tab キーがモーダルの外へ抜けないようにする
+				$modal.on('keydown', function (event) {
+					if (event.which !== 9) {
+						return;
+					}
+
+					var $focusable = $modal
+						.find('a[href], button, iframe, [tabindex]:not([tabindex="-1"])')
+						.filter(':visible');
+
+					if (!$focusable.length) {
+						return;
+					}
+
+					var first = $focusable[0];
+					var last = $focusable[$focusable.length - 1];
+
+					if (event.shiftKey && document.activeElement === first) {
+						event.preventDefault();
+						last.focus();
+					} else if (!event.shiftKey && document.activeElement === last) {
+						event.preventDefault();
+						first.focus();
+					}
+				});
+
+				// More Works
+				$('#moreWorksBtn').on('click', function () {
+					var $button = $(this);
+					var $hidden = $('.work-hidden');
+					var expanded = !$hidden.first().hasClass('show');
+
+					$hidden.toggleClass('show', expanded);
+					$button.attr('aria-expanded', expanded ? 'true' : 'false');
+					$button.find('.btn-text').text(expanded ? 'Show Less' : 'More Works');
+					$button.find('i')
+						.toggleClass('fa-angle-down', !expanded)
+						.toggleClass('fa-angle-up', expanded);
+				});
+
+				// 強化学習カードの 2 枚を切り替えるスライドショー
+				var $slides = $('.mySlides');
+
+				if ($slides.length > 1) {
+					var slideIndex = 0;
+
+					$slides.hide().eq(0).show();
+
+					setInterval(function () {
+						$slides.eq(slideIndex).hide();
+						slideIndex = (slideIndex + 1) % $slides.length;
+						$slides.eq(slideIndex).show();
+					}, 5000);
+				}
+			});
+
+			// リソースの読み込み完了でローディングを消す。
+			// load が来ない場合も body.loading の overflow:hidden で
+			// 操作不能にならないよう、上限時間で必ず解除する。
+			$(window).on('load', function () {
+				var elapsed = Date.now() - loaderStartedAt;
+				setTimeout(hideLoader, Math.max(0, LOADER_MIN_MS - elapsed));
+			});
+
+			setTimeout(hideLoader, LOADER_MAX_MS);
+
+		})();
+	</script>
+</body>
+
+</html>

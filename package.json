@@ -1,0 +1,14 @@
+{
+  "name": "gosoki-portfolio",
+  "version": "1.0.0",
+  "description": "Gosoki's Portfolio",
+  "private": true,
+  "scripts": {
+    "start": "eleventy --serve --port=8233",
+    "build": "eleventy",
+    "clean": "rm -rf _site"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.2"
+  }
+}

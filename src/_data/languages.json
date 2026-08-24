@@ -1,0 +1,22 @@
+[
+  {
+    "name": "中国語",
+    "percent": 95,
+    "detail": "母語である"
+  },
+  {
+    "name": "広東語",
+    "percent": 95,
+    "detail": "母語である"
+  },
+  {
+    "name": "日本語",
+    "percent": 80,
+    "detail": "JLPT N1 合格"
+  },
+  {
+    "name": "英語",
+    "percent": 80,
+    "detail": "大学生レベル"
+  }
+]

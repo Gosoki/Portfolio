@@ -1,0 +1,920 @@
+/* ------------------------------------------------------------------
+ * Gosoki's Portfolio — カスタムスタイル
+ *
+ * assets/css/style.css（テンプレート由来）のあとに読み込み、
+ * 上書きが必要な箇所だけをここに置く。
+ * ------------------------------------------------------------------ */
+
+:root {
+	--primary-color: #333;
+	--secondary-color: #666;
+	--accent-color: #999;
+	--text-dark: #333;
+	--hover-color: #555;
+}
+
+/* 全体のフォント設定 */
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'Noto Sans CJK JP', 'Noto Sans JP', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans', 'Liberation Sans', sans-serif;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* 标题字体优化 */
+h1, h2, h3, h4, h5, h6 {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Yu Gothic Medium', 'Meiryo', 'MS PGothic', sans-serif;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+}
+
+/* 日文字体特殊优化 */
+.pfblock-title {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Yu Gothic Medium', 'Meiryo', sans-serif;
+	font-weight: 700;
+	letter-spacing: 1px;
+}
+
+
+/* 语言技能：入场动画 + hover 动效
+   入场用 opacity/translateY，hover 的抬起量叠加在 --lift 变量上，
+   避免两条规则争夺同一个 transform 属性 */
+.lanskill-item {
+	padding: 15px;
+	border-radius: 10px;
+	opacity: 0;
+	transform: translateY(30px);
+	transition: opacity 0.6s ease, transform 0.4s ease, background-color 0.3s ease;
+}
+
+.lanskill-item.show {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.lanskill-item.show:hover {
+	transform: translateY(-10px);
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* style.css の .details は position:absolute。
+   基準になる positioned 祖先が無いと画面のどこかへ飛んでしまうため、
+   .skill-item と同じように基準を張る */
+.lanskill-item {
+	position: relative;
+}
+
+/* 円グラフの中央にラベルを重ねる。
+   canvas は easyPieChart が left:0/top:0 に絶対配置するので、
+   同じ座標に同じ大きさの箱を敷いて中身を中央寄せする */
+.lanskill-item .chart {
+	margin: 10px 0 20px;
+	transition: transform 0.3s ease;
+}
+
+.lanskill-item .chart-label {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	z-index: 2;
+}
+
+/* style.css のグローバル規則 h3 { margin: -100px 0 70px } を打ち消す。
+   効いたままだとラベルが 100px 引き上げられ、円の外へ飛び出す */
+.lanskill-item .chart-label h3 {
+	margin: 0;
+	font-size: 15px;
+	line-height: 1.2;
+	letter-spacing: 1px;
+	color: var(--text-dark);
+}
+
+/* style.css の .percent は line-height:140px で縦中央を作っていたが、
+   ここは flex で中央寄せするので行の高さを詰める */
+.lanskill-item .percent {
+	line-height: 1.1;
+	font-size: 24px;
+	color: var(--secondary-color);
+}
+
+.lanskill-item:hover .chart {
+	transform: scale(1.1);
+}
+
+/* ラベルが円の中に入ったので、詳細は円と重ならない真下へ */
+.lanskill-item:hover .details {
+	top: auto;
+	bottom: 0;
+	left: 5%;
+	width: 90%;
+}
+
+/* 技能标签字体 */
+.skill-item b, .lanskill-item h3 {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+	font-weight: 600;
+}
+
+/* 作品标题字体 */
+.effect-bubba figcaption h2 {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Yu Gothic Medium', sans-serif;
+	font-size: 1.5em;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+/* 作品描述文字 */
+.effect-bubba figcaption p {
+	text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+	font-weight: 500;
+	line-height: 1.4;
+}
+
+.intro h1 {
+	animation: fadeInScale 1.5s ease-out;
+	text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.intro .start {
+	font-size: 1.2em;
+	letter-spacing: 2px;
+	animation: fadeInUp 2s ease-out;
+}
+
+@keyframes fadeInScale {
+	from {
+		opacity: 0;
+		transform: scale(0.8);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* 首屏背景。外部 CDN の画像が落ちても白背景＋白文字にならないよう下地色を敷く */
+#home {
+	background-color: #2c3e50;
+	background-image: url('https://ae01.alicdn.com/kf/HTB19k4va8WD3KVjSZFsq6AqkpXao.jpg');
+	background-size: cover;
+	background-position: center top;
+	background-repeat: no-repeat;
+	/* 背景をセクションと一緒にスクロールさせる（fixed でも視差でもない） */
+	background-attachment: scroll;
+}
+
+/* プロフィール画像 */
+.intro-avatar {
+	width: 200px;
+	height: 200px;
+	border: 3px solid #fff;
+	border-radius: 50%;
+	margin-bottom: 50px;
+	object-fit: cover;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+	transition: transform 0.3s ease;
+}
+
+.intro-avatar:hover {
+	transform: scale(1.05);
+}
+
+/* ナビゲーションバーの美化 */
+.navbar-custom {
+	background: rgba(255,255,255,0.95);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+	transition: all 0.3s ease;
+}
+
+.navbar-custom .navbar-nav > li > a {
+	color: var(--text-dark);
+	font-weight: 500;
+	transition: all 0.3s ease;
+	position: relative;
+}
+
+.navbar-custom .navbar-nav > li > a:after {
+	content: '';
+	position: absolute;
+	bottom: -2px;
+	left: 50%;
+	width: 0;
+	height: 2px;
+	background: var(--primary-color);
+	transition: all 0.3s ease;
+	transform: translateX(-50%);
+}
+
+.navbar-custom .navbar-nav > li > a:hover:after {
+	width: 80%;
+}
+
+/* セクションタイトルの美化 */
+.pfblock-title {
+	position: relative;
+	font-weight: 700;
+	color: var(--text-dark);
+}
+
+.pfblock-line {
+	background-color: var(--primary-color);
+	height: 3px;
+	width: 60px;
+	margin: 20px auto;
+	border-radius: 2px;
+}
+
+/* アバウトセクションのアイコンボックス美化 */
+.iconbox {
+	background: white;
+	border-radius: 10px;
+	padding: 30px 20px;
+	box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+	transition: all 0.3s ease;
+	margin-bottom: 30px;
+}
+
+.iconbox:hover {
+	transform: translateY(-10px);
+	box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.iconbox-icon {
+	font-size: 3em;
+	color: var(--primary-color);
+	margin-bottom: 20px;
+	transition: all 0.3s ease;
+}
+
+.iconbox:hover .iconbox-icon {
+	transform: rotateY(360deg);
+	color: var(--hover-color);
+}
+
+/* Skills 提示小红点 - 绝对定位不影响布局 */
+.skill-item b {
+	position: relative;
+}
+
+/* Achievements 样式 */
+#achievements .pfblock-header {
+	margin-bottom: 50px;
+}
+
+/* こちらも h3 { margin: -100px 0 70px } を打ち消しておく。
+   以前は .pfblock-header の margin-bottom:150px で相殺していたが、
+   負マージンを上書きするモバイル幅では 150px の空白が残っていた */
+.achievement-section-title {
+	color: var(--text-dark);
+	font-size: 1.5em;
+	font-weight: 600;
+	margin-top: 0;
+	margin-bottom: 20px;
+	padding-bottom: 0;
+}
+
+.achievement-section-title i {
+	margin-right: 10px;
+	color: var(--primary-color);
+}
+
+.achievement-timeline {
+	position: relative;
+	padding-left: 30px;
+	padding-top: 0;
+}
+
+.achievement-timeline:before {
+	content: '';
+	position: absolute;
+	left: 10px;
+	top: 0;
+	bottom: 0;
+	width: 2px;
+	background: linear-gradient(to bottom, var(--primary-color), var(--accent-color));
+}
+
+.achievement-item {
+	position: relative;
+	margin-bottom: 30px;
+	padding-left: 30px;
+}
+
+.achievement-item:before {
+	content: '';
+	position: absolute;
+	left: 4px;
+	top: 5px;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background-color: var(--primary-color);
+	border: 3px solid white;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+	z-index: 1;
+}
+
+.achievement-year {
+	background-color: var(--primary-color);
+	color: white;
+	display: inline-block;
+	padding: 5px 15px;
+	border-radius: 20px;
+	font-size: 0.9em;
+	font-weight: 600;
+	margin-bottom: 10px;
+	margin-left: 0;
+	position: relative;
+	z-index: 2;
+}
+
+.achievement-content {
+	position: relative;
+	background-color: white;
+	padding: 15px;
+	border-radius: 8px;
+	box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.achievement-content:hover {
+	transform: translateX(5px);
+	box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.achievement-content h4 {
+	color: var(--text-dark);
+	font-size: 1.2em;
+	font-weight: 600;
+	margin-bottom: 8px;
+	line-height: 1.3;
+	margin-top: 0;
+}
+
+.achievement-venue {
+	color: var(--secondary-color);
+	font-weight: 500;
+	margin-bottom: 5px;
+	font-size: 0.95em;
+}
+
+.achievement-desc {
+	color: var(--accent-color);
+	font-size: 0.9em;
+	line-height: 1.5;
+	margin-bottom: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 991px) {
+	.achievement-section-title {
+		font-size: 1.3em;
+		margin-bottom: 15px;
+		margin-top: 30px;
+	}
+	
+	.col-md-6:first-child .achievement-section-title {
+		margin-top: 0;
+	}
+}
+
+@media (max-width: 768px) {
+	.achievement-section-title {
+		font-size: 1.2em;
+		margin-bottom: 15px;
+		margin-top: 40px;
+	}
+	
+	.achievement-item {
+		padding-left: 25px;
+		margin-bottom: 25px;
+	}
+	
+	.achievement-content h4 {
+		font-size: 1.05em;
+	}
+	
+	.achievement-timeline {
+		padding-left: 25px;
+	}
+	
+	.achievement-timeline:before {
+		left: 8px;
+	}
+	
+	.achievement-item:before {
+		left: 2px;
+	}
+}
+
+.skill-hint-dot {
+	position: absolute;
+	top: 0px;
+	right: -15px;
+	width: 12px;
+	height: 12px;
+	background-color: #e74c3c;
+	border-radius: 50%;
+	border: 1px solid white;
+	animation: pulse 2s ease-in-out infinite;
+	opacity: 1;
+	transition: opacity 0.3s ease;
+}
+
+.skill-hint-dot.hide {
+	opacity: 0;
+	pointer-events: none;
+}
+
+@keyframes pulse {
+	0%, 100% { transform: scale(1); opacity: 1; }
+	50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+.skill-item {
+	position: relative;
+	transition: all 0.3s ease;
+	border-radius: 8px;
+}
+
+.skill-item:hover {
+	transform: translateY(-8px);
+	background-color: rgba(255, 255, 255, 0.08);
+	z-index: 100;
+}
+
+.skill-item .progress {
+	transition: all 0.3s ease;
+}
+
+.skill-item:hover .progress {
+	transform: scale(1.05);
+}
+
+.skill-item .progress-bar {
+	transition: all 0.4s ease;
+}
+
+/* 作品カードの美化 */
+.grid figure {
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+	transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	cursor: pointer;
+}
+
+.grid figure:hover {
+	transform: translateY(-15px) scale(1.05);
+	box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.grid figure img {
+	transition: all 0.4s ease;
+}
+
+.grid figure:hover img {
+	transform: scale(1.15);
+}
+
+.grid figure:active {
+	transform: translateY(-5px) scale(1.02);
+}
+
+/* キーボード操作時のフォーカス表示 */
+.work-link:focus-visible,
+.close-modal:focus-visible {
+	outline: 3px solid #4d90fe;
+	outline-offset: 2px;
+}
+
+/* More Worksボタンの美化 */
+#moreWorksBtn {
+	background-color: var(--primary-color);
+	border: none;
+	color: white;
+	padding: 12px 30px;
+	font-size: 1em;
+	font-weight: 500;
+	border-radius: 6px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+	transition: all 0.3s ease;
+}
+
+#moreWorksBtn:hover {
+	background-color: var(--hover-color);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+#moreWorksBtn i {
+	margin-left: 8px;
+	transition: transform 0.3s ease;
+}
+
+/* Work hidden animation
+   display 切り替えは transition を打ち切るため、表示側だけアニメーションさせる */
+.work-hidden {
+	display: none;
+}
+
+.work-hidden.show {
+	display: block;
+	animation: fadeInUp 0.6s ease both;
+}
+
+/* 返回顶部按钮 */
+.scroll-up {
+	position: fixed;
+	bottom: 30px;
+	right: 30px;
+	width: 50px;
+	height: 50px;
+	background-color: var(--primary-color);
+	border-radius: 50%;
+	text-align: center;
+	line-height: 50px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	transition: opacity 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease;
+	z-index: 1000;
+	opacity: 0;
+	display: block;
+	pointer-events: none;
+}
+
+.scroll-up.show {
+	opacity: 0.9;
+	pointer-events: auto;
+}
+
+.scroll-up:hover {
+	background-color: var(--hover-color);
+	transform: translateY(-3px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	opacity: 1;
+}
+
+.scroll-up a,
+.scroll-up a:hover,
+.scroll-up a:focus,
+.scroll-up a:active {
+	color: #fff;
+	font-size: 1.5em;
+	text-decoration: none;
+	background-color: transparent;
+	width: 100%;
+	height: 100%;
+	display: block;
+	line-height: 50px;
+}
+
+/* モーダル表示中の背景スクロール抑止（スクロールバー分の横ズレも防ぐ） */
+body.modal-open {
+	overflow: hidden;
+	padding-right: var(--scrollbar-width, 0px);
+}
+
+/* 作品模态框样式 */
+.work-modal {
+	display: none;
+	position: fixed;
+	z-index: 10000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.8);
+	backdrop-filter: blur(5px);
+	align-items: center;
+	justify-content: center;
+}
+
+.work-modal-content {
+	background-color: white;
+	margin: 0;
+	padding: 0;
+	border-radius: 10px;
+	width: 90%;
+	max-width: 1200px;
+	max-height: 90vh;
+	overflow-y: auto;
+	box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+	animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+	from {
+		opacity: 0;
+		transform: translateY(-50px) scale(0.9);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+.work-modal-header {
+	padding: 20px 30px;
+	border-bottom: 1px solid #eee;
+	position: sticky;
+	top: 0;
+	background-color: white;
+	z-index: 1;
+}
+
+.work-modal-header h2 {
+	margin: 0;
+	color: var(--text-dark);
+	font-size: 1.8em;
+}
+
+.close-modal {
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	font-size: 28px;
+	font-weight: bold;
+	color: #aaa;
+	cursor: pointer;
+	line-height: 1;
+	transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+	color: #333;
+}
+
+.work-modal-body {
+	padding: 30px;
+}
+
+.work-keywords {
+	margin-bottom: 20px;
+}
+
+.work-keywords .label {
+	margin-right: 8px;
+	margin-bottom: 5px;
+	display: inline-block;
+}
+
+.work-description {
+	font-size: 1.1em;
+	line-height: 1.6;
+	color: #555;
+	margin-bottom: 30px;
+}
+
+.work-media {
+	text-align: center;
+}
+
+.work-media iframe {
+	border: 0;
+	border-radius: 8px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+}
+
+/* レスポンシブ改善 */
+@media (max-width: 768px) {
+	.grid figure {
+		margin-bottom: 20px;
+	}
+
+	#moreWorksBtn {
+		padding: 12px 30px;
+		font-size: 1em;
+	}
+	
+	.work-modal-content {
+		width: 95%;
+		margin: 5% auto;
+	}
+	
+	.work-modal-header {
+		padding: 15px 20px;
+	}
+	
+	.work-modal-body {
+		padding: 20px;
+	}
+	
+	.work-media iframe {
+		width: 100% !important;
+		height: 250px !important;
+	}
+}
+
+/* ページ全体のアニメーション。
+   JS が無効・WOW.js の読み込みに失敗した場合でも本文が消えないよう、
+   visibility を隠すのは .js-enabled（= JS 有効）が付いているときだけにする */
+.js-enabled .wow {
+	visibility: hidden;
+}
+
+/* ローディング画面 */
+.loader-wrapper {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(255, 255, 255, 0.1);
+	z-index: 9999;
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-end;
+	padding: 20px;
+	transition: opacity 0.5s ease;
+}
+
+/* 加载期间禁止滚动 */
+body.loading {
+	overflow: hidden;
+}
+
+.loader {
+	width: 50px;
+	height: 50px;
+	border: 4px solid #f3f3f3;
+	border-top: 4px solid var(--primary-color);
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+.loader-wrapper.fade-out {
+	opacity: 0;
+	pointer-events: none;
+}
+
+/* ------------------------------------------------------------------
+ * Career — 横向のタイムライン
+ *
+ * ノード 1 つが「一続きの経歴」を表す。日付は期間で書く。
+ * 幅が足りない画面では縦並びに切り替える（768px 以下）。
+ * ------------------------------------------------------------------ */
+
+.career-track {
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	margin-top: 30px;
+	padding-top: 46px;
+}
+
+/* ノードを貫く横線。両端は少し薄くして切れ目を目立たせない */
+.career-track::before {
+	content: '';
+	position: absolute;
+	top: 46px;
+	left: 0;
+	right: 0;
+	height: 2px;
+	background: linear-gradient(to right,
+			rgba(135, 135, 135, 0) 0%,
+			var(--accent-color) 8%,
+			var(--accent-color) 92%,
+			rgba(135, 135, 135, 0) 100%);
+}
+
+.career-item {
+	position: relative;
+	flex: 1 1 0;
+	min-width: 0;
+	padding: 26px 10px 0;
+	text-align: center;
+}
+
+/* 線の上に乗る丸 */
+.career-item::before {
+	content: '';
+	position: absolute;
+	top: -7px;
+	left: 50%;
+	width: 14px;
+	height: 14px;
+	margin-left: -7px;
+	border-radius: 50%;
+	background-color: #fff;
+	border: 3px solid var(--accent-color);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, .12);
+	transition: all .3s ease;
+}
+
+/* 進行中の経歴は塗りつぶして目立たせる */
+.career-item.is-current::before {
+	background-color: var(--primary-color);
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 5px rgba(51, 51, 51, .12), 0 2px 6px rgba(0, 0, 0, .18);
+}
+
+.career-item:hover::before {
+	transform: scale(1.25);
+}
+
+.career-period {
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: .5px;
+	color: var(--secondary-color);
+	margin-bottom: 6px;
+	white-space: nowrap;
+}
+
+.career-title {
+	font-size: 15px;
+	font-weight: 700;
+	line-height: 1.4;
+	color: var(--text-dark);
+	margin-bottom: 4px;
+}
+
+.career-detail {
+	font-size: 12.5px;
+	line-height: 1.5;
+	color: var(--accent-color);
+}
+
+.career-now {
+	display: inline-block;
+	margin-top: 7px;
+	padding: 2px 10px;
+	border-radius: 999px;
+	background-color: var(--primary-color);
+	color: #fff;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: .5px;
+}
+
+/* ---- 狭い画面では縦並びに切り替える ---- */
+@media (max-width: 768px) {
+	.career-track {
+		display: block;
+		padding-top: 0;
+		padding-left: 30px;
+		margin-top: 20px;
+	}
+
+	/* 横線を縦線に */
+	.career-track::before {
+		top: 8px;
+		bottom: 8px;
+		left: 9px;
+		right: auto;
+		width: 2px;
+		height: auto;
+		background: linear-gradient(to bottom,
+				rgba(135, 135, 135, 0) 0%,
+				var(--accent-color) 6%,
+				var(--accent-color) 94%,
+				rgba(135, 135, 135, 0) 100%);
+	}
+
+	.career-item {
+		padding: 0 0 26px;
+		text-align: left;
+	}
+
+	.career-item:last-child {
+		padding-bottom: 0;
+	}
+
+	.career-item::before {
+		top: 3px;
+		left: -28px;
+		margin-left: 0;
+	}
+
+	.career-period {
+		margin-bottom: 3px;
+	}
+}

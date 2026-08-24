@@ -1,0 +1,413 @@
+[
+  {
+    "id": "work1",
+    "featured": true,
+    "card": {
+      "title": "地震可視化",
+      "text": "地震を可視化するプログラム"
+    },
+    "images": [
+      {
+        "src": "img/work1.gif",
+        "alt": "地震可視化プログラムの動作画面",
+        "width": 550,
+        "height": 305
+      }
+    ],
+    "title": "地震可視化プログラム",
+    "keywords": [
+      "Python",
+      "Processing",
+      "Opendata"
+    ],
+    "description": "Python と Processing を使用して地震可視化プログラムである。オープンデータを活用し、地震の発生パターンや動きを直感的に理解できる直観的で効果的なシステムである。",
+    "media": [
+      {
+        "type": "drive",
+        "id": "1vq7bUfrHUa5AmWhWucqG0xiS6KuBnbcL",
+        "height": 480
+      }
+    ]
+  },
+  {
+    "id": "work2",
+    "featured": true,
+    "card": {
+      "title": "MR家具配置",
+      "text": "マルチユーザ型MR<br />シミュレーションシステム"
+    },
+    "images": [
+      {
+        "src": "img/work2.gif",
+        "alt": "MR 家具配置シミュレーションの動作画面",
+        "width": 550,
+        "height": 309
+      }
+    ],
+    "title": "マルチユーザ型MRシミュレーションシステム",
+    "keywords": [
+      "Mixed Reality",
+      "Unity",
+      "C#",
+      "HoloLens2"
+    ],
+    "description": "HoloLens 2 を活用し、Mixed Reality(MR)技術を駆使した家具配置シミュレーションシステムであり、実物大に近い大きさで家具を配置し、複数人で同時に利用でき、リアルタイムで協力して家具の配置を閲覧・操作できるシステムである。",
+    "media": [
+      {
+        "type": "drive",
+        "id": "193msODsMNqJbdq1FtrEKVJbLLAH_SdnH"
+      },
+      {
+        "type": "drive",
+        "id": "1IIFRZd9HebhUJwakgFGDgOLFs7IQdcJi"
+      }
+    ]
+  },
+  {
+    "id": "work4",
+    "featured": true,
+    "card": {
+      "title": "花の種類判別システム",
+      "text": "一つの画像の多種類の花の種類を判別するシステム"
+    },
+    "images": [
+      {
+        "src": "img/work41.jpg",
+        "alt": "花の種類判別システムの実行結果",
+        "width": 550,
+        "height": 310
+      }
+    ],
+    "title": "花の種類判別システム",
+    "keywords": [
+      "Python",
+      "OpenCV",
+      "AI Model",
+      "YOLOv5"
+    ],
+    "description": "一つの画像の多種類の花の種類を判別するシステム。画像認識技術とAIモデルを活用して、複数の花の種類を自動的に識別します。",
+    "media": [
+      {
+        "type": "slides",
+        "id": "2PACX-1vQRXYBx1NjM0vkJg9M7z9jbHFiLxZ7pj1zdPCG-9x0EsBSQtyh4s0u9ca0zDi7qqiJERjiTvHSOhO4t"
+      }
+    ]
+  },
+  {
+    "id": "work5",
+    "featured": true,
+    "card": {
+      "title": "強化学習",
+      "text": "強化学習アルゴリズム"
+    },
+    "images": [
+      {
+        "src": "img/work5.gif",
+        "alt": "強化学習エージェントの学習過程 1",
+        "width": 550,
+        "height": 310
+      },
+      {
+        "src": "img/work51.gif",
+        "alt": "強化学習エージェントの学習過程 2",
+        "width": 550,
+        "height": 310
+      }
+    ],
+    "title": "強化学習 Demo",
+    "keywords": [
+      "Python",
+      "強化学習",
+      "ML-Agents"
+    ],
+    "description": "強化学習アルゴリズムを使用した様々なデモンストレーション。エージェントが環境との相互作用を通じて学習し、最適な行動を見つけ出すシステムです。",
+    "media": [
+      {
+        "type": "drive",
+        "id": "1wxD63I2FtdtZ3CYMkgwtdqjdz8gY21Rm"
+      },
+      {
+        "type": "drive",
+        "id": "1-0BEiPp-eOj4RcMBEPhoromPkDPg5IJd"
+      },
+      {
+        "type": "drive",
+        "id": "1oIA8qAhPHjKyCPDAe-mXpz51vRCtGA_-"
+      },
+      {
+        "type": "drive",
+        "id": "1SWtT2yDnEv7U2USr7InhcRYeInXd3-M4"
+      }
+    ]
+  },
+  {
+    "id": "work7",
+    "featured": true,
+    "card": {
+      "title": "複数人複合現実",
+      "text": "マルチユーザ型MR<br />シミュレーションシステム(前身)"
+    },
+    "images": [
+      {
+        "src": "img/work7.gif",
+        "alt": "複数人複合現実システムの動作画面",
+        "width": 550,
+        "height": 310
+      }
+    ],
+    "title": "複合現実 Demo",
+    "keywords": [
+      "Mixed Reality",
+      "Unity",
+      "C#",
+      "HoloLens2"
+    ],
+    "description": "HoloLens2を使用した複合現実技術のデモンストレーション。仮想オブジェクトと現実世界を融合させた革新的なユーザー体験を提供します。",
+    "media": [
+      {
+        "type": "drive",
+        "id": "1WI7qfa_57NHA9gM-SsbY0tggZmwxyp9y"
+      },
+      {
+        "type": "drive",
+        "id": "1sJDm6QqReDRwQhbL2Y2Llt2vKtNH5PYu"
+      },
+      {
+        "type": "drive",
+        "id": "1I6DQbvVyWVN77WokjLwKUGY2sJz9H52e"
+      }
+    ]
+  },
+  {
+    "id": "work9",
+    "featured": true,
+    "card": {
+      "title": "メタバース(VR)",
+      "text": "COME SOON.."
+    },
+    "images": [
+      {
+        "src": "img/work9.gif",
+        "alt": "WebGL メタバースの動作画面",
+        "width": 550,
+        "height": 310
+      }
+    ],
+    "title": "WebGL メタバース（VR）",
+    "keywords": [
+      "WebGL",
+      "Unity",
+      "Metaverse",
+      "VR"
+    ],
+    "description": "WebGL技術を使用したメタバース環境の構築。仮想現実空間でのインタラクティブな体験を提供し、マルチユーザー対応のVRシステムを開発しました。",
+    "media": [
+      {
+        "type": "drive",
+        "id": "1n56Axwf5X6SCS0xhRXNjOZOuZz3Y-01n"
+      }
+    ]
+  },
+  {
+    "id": "work10",
+    "featured": true,
+    "card": {
+      "title": "時空間データ可視化",
+      "text": "地震データの可視化と検索"
+    },
+    "images": [
+      {
+        "src": "img/work10.jpg",
+        "alt": "時空間データ可視化システムの画面",
+        "width": 550,
+        "height": 310
+      }
+    ],
+    "title": "地震データの可視化と検索",
+    "keywords": [
+      "PHP",
+      "JavaScript",
+      "Opendata"
+    ],
+    "description": "地震データの探索、検索、および可視化に役立つ機能を提供しています。地震の発生地点や時刻、マグニチュードなどの情報を簡単に検索し、地図上に可視化することができるシステムである。",
+    "media": [
+      {
+        "type": "link",
+        "label": "Demo",
+        "url": "https://muds.gdl.jp/~s2122028/fin/"
+      },
+      {
+        "type": "slides",
+        "id": "2PACX-1vS8aHNPEY4vOi0XkzvA-muaR3f3vj7gMDsa5LI9OOmPu_v-tiEmB7OTex5s0Kr6Yntgfg2WlVqde9ah"
+      }
+    ]
+  },
+  {
+    "id": "work11",
+    "featured": true,
+    "card": {
+      "title": "IoT開発",
+      "text": "ジェスチャーによる制御システム"
+    },
+    "images": [
+      {
+        "src": "img/work11.gif",
+        "alt": "ジェスチャー制御 IoT システムの動作画面",
+        "width": 550,
+        "height": 309
+      }
+    ],
+    "title": "IoT開発 - ジェスチャー制御システム",
+    "keywords": [
+      "IoT",
+      "Arduino",
+      "Python",
+      "OpenCV"
+    ],
+    "description": "センサーを利用して人を検知し、ユーザーの手のジェスチャー方向を認識し、その結果に基づいて LED および OLED の表示を制御するシステムである。",
+    "media": [
+      {
+        "type": "link",
+        "label": "Docs",
+        "url": "https://docs.google.com/document/d/1uWJgW5eTkQLDrfBglm0eKJ8mkShTvANUPtwYkIDh8-w",
+        "text": "Google ドキュメント"
+      },
+      {
+        "type": "drive",
+        "id": "1pdDVVFX0_dZJV5vNlMIDTw1lntbxo1_7"
+      },
+      {
+        "type": "doc",
+        "id": "2PACX-1vQnDVJNZdfxq1Eo_zItylFgw-_tgZ8yVugIsK5fv474be7yWwqP5IN8Q0IhVAj51t-Ah2XLcB75Btnu"
+      }
+    ]
+  },
+  {
+    "id": "work12",
+    "featured": true,
+    "card": {
+      "title": "最適化製造利益",
+      "text": "線形計画法を用いて製造業の利益を最大化システム"
+    },
+    "images": [
+      {
+        "src": "img/work12.jpg",
+        "alt": "製造利益最適化システムの画面",
+        "width": 550,
+        "height": 310
+      }
+    ],
+    "title": "最適化製造利益システム",
+    "keywords": [
+      "Python",
+      "Flask",
+      "JavaScript",
+      "SQL"
+    ],
+    "description": "線形計画法を用いて製造業の利益を最大化するシステム。複雑な制約条件下で最適な生産計画を策定し、利益を最大化する解を提供します。",
+    "media": [
+      {
+        "type": "link",
+        "label": "Demo",
+        "url": "https://muds.gdl.jp/s2122028"
+      },
+      {
+        "type": "slides",
+        "id": "2PACX-1vSK3jOC59-0altlkVPd7fcZTPz3mzmEKzUO-Q0pd2rMaxNEm7l-z4Y-bngBzFEhjm60Uud2x1XMCI1I"
+      }
+    ]
+  },
+  {
+    "id": "work3",
+    "featured": false,
+    "card": {
+      "title": "行きたい場所を探す",
+      "text": "行きたい場所までの最短距離をGAで計算する"
+    },
+    "images": [
+      {
+        "src": "img/work3.jpg",
+        "alt": "行きたい場所を探すプログラムの画面",
+        "width": 550,
+        "height": 310
+      }
+    ],
+    "title": "行きたい場所を探すプログラム",
+    "keywords": [
+      "Python",
+      "Flask",
+      "SQL",
+      "Opendata"
+    ],
+    "description": "遺伝的アルゴリズムを使用して、複数の目的地への最短経路を計算するシステム。オープンデータを活用し、効率的な旅行プランニングを支援します。",
+    "media": [
+      {
+        "type": "drive",
+        "id": "1JTrzINzcjuqR6LdVXcrOl1SVuL2yitcU"
+      }
+    ]
+  },
+  {
+    "id": "work8",
+    "featured": false,
+    "card": {
+      "title": "UXサービスデザイン",
+      "text": "&lt;スマートケトル&gt;<br />CJM テンプレート &amp; PV"
+    },
+    "images": [
+      {
+        "src": "img/work8.jpg",
+        "alt": "スマートケトルの UX サービスデザイン",
+        "width": 550,
+        "height": 310
+      }
+    ],
+    "title": "UXサービスデザイン - スマートケトル",
+    "keywords": [
+      "UXサービスデザイン",
+      "PV",
+      "CJM"
+    ],
+    "description": "スマートケトルのユーザーエクスペリエンス設計。カスタマージャーニーマップの作成とプロモーションビデオの制作を通じて、ユーザー中心のサービス設計を実現しました。",
+    "media": [
+      {
+        "type": "drive",
+        "id": "1AlTohyidO204BKmVFkQIxOlv_MoZXpGy"
+      },
+      {
+        "type": "slides",
+        "id": "2PACX-1vSw2RV8JmuC6pLHmIHm_JxgelkYlaiLUA0Lc_Ch8Ks2Y-QP8KcV2zS589Da5GgkwAbCzkOwgyyElIdP"
+      }
+    ]
+  },
+  {
+    "id": "work6",
+    "featured": false,
+    "card": {
+      "title": "音声の自動生成",
+      "text": "音声による翻訳した新音声の自動生成プログラム"
+    },
+    "images": [
+      {
+        "src": "img/work61.jpg",
+        "alt": "音声の自動生成プログラムの画面",
+        "width": 550,
+        "height": 310
+      }
+    ],
+    "title": "音声による翻訳した新音声の自動生成プログラム",
+    "keywords": [
+      "Python",
+      "Openvino",
+      "Text-to-speech",
+      "Wav2vec"
+    ],
+    "description": "音声認識と音声合成技術を組み合わせた自動翻訳システム。入力された音声を認識し、翻訳した内容を新しい音声として生成します。",
+    "media": [
+      {
+        "type": "slides",
+        "id": "2PACX-1vSFv5E1IpDL3H8DlSV1P84NCrOlxlqTD3vhZO1n1ecHXBP7ZeJXz_qjlYidezIAOStiZcYPDXcV730o"
+      }
+    ]
+  }
+]
