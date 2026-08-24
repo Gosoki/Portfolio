@@ -30,6 +30,27 @@ module.exports = function (eleventyConfig) {
 		...works.filter((w) => w.featured === false),
 	]);
 
+	// ---- 構造化データ (JSON-LD) 用のヘルパ ----
+	// 経歴とスキルは既存の JSON から拾うので、SEO のために二重管理しなくてよい
+
+	// 一定以上の習熟度のスキル名だけを取り出す
+	eleventyConfig.addFilter("skillNames", (skills, min) =>
+		(skills || []).filter((s) => (s.percent || 0) >= (min || 60)).map((s) => s.name)
+	);
+
+	// career.json から所属（current: true）／出身（それ以外）を組み立てる
+	eleventyConfig.addFilter("orgList", (career, wantCurrent) =>
+		(career || [])
+			.filter((w) => Boolean(w.current) === Boolean(wantCurrent))
+			.map((w) => ({
+				"@type": "EducationalOrganization",
+				name: [w.title, w.detail].filter(Boolean).join(" "),
+			}))
+	);
+
+	// sitemap.xml の lastmod 用
+	eleventyConfig.addGlobalData("buildDate", () => new Date().toISOString().slice(0, 10));
+
 	const DEFAULT_HEIGHT = { drive: 576, slides: 576, doc: 400 };
 
 	// 埋め込み定義（{type, id} など）から iframe の HTML を組み立てる。

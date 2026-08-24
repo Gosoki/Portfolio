@@ -197,6 +197,59 @@ tools/editor.html          データ編集エディタ（開発時のみ配信�
 
 ---
 
+## SEO
+
+「呉祖熙」「Go Soki」などで検索に引っかかるようにするための仕掛け。
+
+### 何が入っているか
+
+| 仕掛け | 場所 | 効果 |
+|---|---|---|
+| `<title>` に人物名 | `site.json` の `title` | 検索結果の見出しになる。重みが最も大きい |
+| `description` に表記ゆれ | `site.json` の `description` | 検索結果の説明文。`呉祖熙`（空白なし）もここに含めてある |
+| JSON-LD (Person) | `index.njk` の `<script type="application/ld+json">` | 検索エンジンに「この人物 = このページ」と認識させる |
+| `sitemap.xml` | `src/sitemap.njk` から生成 | クローラに URL を知らせる |
+| `robots.txt` | `src/robots.njk` から生成 | クロールを明示的に許可し、sitemap の場所を示す |
+
+### JSON-LD は自動生成される
+
+構造化データの中身は既存の JSON から組み立てられるので、**SEO のために情報を二重に持たなくてよい**。
+
+- `affiliation`（所属）… `career.json` の `current: true` の項目
+- `alumniOf`（出身）… `career.json` のそれ以外
+- `knowsAbout`（得意分野）… `skills.json` のうち `percent >= 60` のもの
+- `alternateName`（表記ゆれ）… `site.json` の `person.alternateName`
+
+新しい経歴やスキルを足せば構造化データにも自動で反映される。
+
+### 名前の表記ゆれ
+
+検索する人がどう入力するか分からないので、`site.json` の `person.alternateName` に並べてある。
+
+```
+呉祖熙 / 呉　祖熙 / Wu Zuxi / Go Soki / Gosoki / ゴ ソキ / ゴソキ / ご そき
+```
+
+**ページ見出しは `呉 祖熙`（半角空白入り）だが、空白なしの `呉祖熙` は
+description と JSON-LD に入れてある。**新しい表記を足したくなったらここに追記する。
+
+### 検索エンジンへの登録（手作業）
+
+sitemap を置いただけでは早く拾われないので、登録しておくとよい。
+
+1. [Google Search Console](https://search.google.com/search-console) でプロパティを追加
+   - ドメイン単位で登録する場合、Cloudflare に TXT レコードを 1 本足して所有権を確認する
+2. 「サイトマップ」に `https://gosoki.jp/sitemap.xml` を送信
+3. 「URL 検査」で `https://gosoki.jp/` をインデックス登録リクエスト
+4. [Bing Webmaster Tools](https://www.bing.com/webmasters) でも同様に登録できる（Search Console から設定を取り込める）
+
+### 被リンクも効く
+
+検索エンジンは外部からのリンクをたどって新しいサイトを見つける。
+GitHub のプロフィール欄や他のサイトから `https://gosoki.jp` へリンクを張っておくと拾われやすい。
+
+---
+
 ## デプロイ (GitHub Pages)
 
 `.github/workflows/deploy.yml` が `main` への push で自動実行される。
@@ -204,18 +257,42 @@ tools/editor.html          データ編集エディタ（開発時のみ配信�
 独自ドメインを使うため、DNS 側に以下が必要:
 
 ```
-A     gosoki.jp    185.199.108.153
-A     gosoki.jp    185.199.109.153
-A     gosoki.jp    185.199.110.153
-A     gosoki.jp    185.199.111.153
+# apex は CNAME を使えないので A / AAAA で指す
+A     gosoki.jp        185.199.108.153
+A     gosoki.jp        185.199.109.153
+A     gosoki.jp        185.199.110.153
+A     gosoki.jp        185.199.111.153
 
-AAAA  gosoki.jp    2606:50c0:8000::153
-AAAA  gosoki.jp    2606:50c0:8001::153
-AAAA  gosoki.jp    2606:50c0:8002::153
-AAAA  gosoki.jp    2606:50c0:8003::153
+AAAA  gosoki.jp        2606:50c0:8000::153
+AAAA  gosoki.jp        2606:50c0:8001::153
+AAAA  gosoki.jp        2606:50c0:8002::153
+AAAA  gosoki.jp        2606:50c0:8003::153
 
-CNAME www.gosoki.jp → gosoki.github.io   （任意。www を apex へ寄せる）
+# www はサブドメインなので CNAME でよい。IP ではなく github.io を指す
+CNAME www.gosoki.jp    gosoki.github.io
 ```
+
+`src/CNAME` に書いてあるのは apex (`gosoki.jp`) なので、そちらが主ドメインになる。
+**`www.gosoki.jp` へのアクセスは GitHub が自動で apex へ 301 リダイレクトする。**
+リダイレクトは GitHub のサーバが返すので、www の CNAME レコードも引いておく必要がある
+（そうしないとリクエストがそこまで届かない）。証明書は apex と www の両方に発行される。
+
+主ドメインを www 側にしたくなったら `src/CNAME` と `site.json` の `url` を書き換えるだけでよい。
+DNS レコードはどちらの向きでも同じ。
 
 DNS が通ったらリポジトリの **Settings → Pages** で **Enforce HTTPS** を有効にする。
 IP は GitHub 側の変更があり得るので、設定前に[公式ドキュメント](https://docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site)で確認するとよい。
+
+### Cloudflare を挟む場合の注意
+
+`gosoki.jp` は Cloudflare の DNS を使っている。**上のレコードはすべて「DNS only」（灰色の雲）にすること。**
+
+プロキシ（橙色の雲）を有効にすると、Let's Encrypt の HTTP-01 検証が Cloudflare に遮られ、
+GitHub が証明書を発行できずに **HTTP 525** になる。
+
+証明書は 90 日ごとに自動更新され、そのたびに同じ検証が走る。
+プロキシを有効にしたままだと**数か月後に突然 525 になる**ため、
+どうしてもプロキシを使いたい場合は SSL/TLS モードを **Full**（Full strict ではなく）にしておく。
+
+なお GitHub Pages 自体が Fastly の CDN 上にあり、東京にもエッジがある
+（実測 TTFB 14ms / X-Served-By: cache-nrt）。速度目的だけなら Cloudflare を挟む必要は薄い。

@@ -1,10 +1,40 @@
 {
-  "title": "Gosoki's Portfolio",
+  "title": "呉 祖熙 (Go Soki) | Portfolio",
   "author": "呉 祖熙 (Go Soki)",
   "lang": "ja",
   "url": "https://gosoki.jp",
   "themeColor": "#2c2c2c",
   "ogImage": "img/me.png",
-  "description": "呉 祖熙（Go Soki）のポートフォリオ。武蔵野大学データサイエンス学部。Mixed Reality・メタバース・生成AI・リアルタイム通信・データ可視化の研究開発事例をまとめています。",
-  "shortDescription": "呉 祖熙（Go Soki）のポートフォリオ。Mixed Reality・メタバース・生成AI・データ可視化の研究開発事例。"
+  "description": "呉 祖熙（呉祖熙 / Wu Zuxi / Go Soki）のポートフォリオ。武蔵野大学大学院データサイエンス研究科。Mixed Reality・メタバース・生成AI・リアルタイム通信・データ可視化の研究開発事例をまとめています。",
+  "shortDescription": "呉 祖熙（Go Soki）のポートフォリオ。Mixed Reality・メタバース・生成AI・データ可視化の研究開発事例。",
+  "siteName": "Gosoki's Portfolio",
+  "person": {
+    "name": "呉 祖熙",
+    "alternateName": [
+      "呉祖熙",
+      "呉　祖熙",
+      "Wu Zuxi",
+      "Go Soki",
+      "Gosoki",
+      "ゴ ソキ",
+      "ゴソキ",
+      "ご そき"
+    ],
+    "givenName": "祖熙",
+    "familyName": "呉",
+    "jobTitle": "大学院生 / Researcher",
+    "nationality": "中国",
+    "knowsLanguage": [
+      "zh-CN",
+      "yue",
+      "ja",
+      "en"
+    ],
+    "sameAs": [
+      "https://github.com/Gosoki",
+      "https://www.wuzuxi.com",
+      "https://blog.wuzuxi.com",
+      "https://photo.wuzuxi.com"
+    ]
+  }
 }
