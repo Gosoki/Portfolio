@@ -172,8 +172,9 @@ h1, h2, h3, h4, h5, h6 {
 
 /* 首屏背景。外部 CDN の画像が落ちても白背景＋白文字にならないよう下地色を敷く */
 #home {
+	/* background-image は site.json の hero.background から
+	   テンプレート側でインライン指定する */
 	background-color: #2c3e50;
-	background-image: url('https://ae01.alicdn.com/kf/HTB19k4va8WD3KVjSZFsq6AqkpXao.jpg');
 	background-size: cover;
 	background-position: center top;
 	background-repeat: no-repeat;

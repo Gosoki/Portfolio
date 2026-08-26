@@ -36,5 +36,51 @@
       "https://blog.wuzuxi.com",
       "https://photo.wuzuxi.com"
     ]
-  }
+  },
+  "hero": {
+    "name": "呉 祖熙",
+    "ruby": "ゴ ソキ",
+    "avatar": "img/me.png",
+    "tagline": "Portfolio",
+    "subtitle": "未知の高みへ向かって",
+    "background": "https://ae01.alicdn.com/kf/HTB19k4va8WD3KVjSZFsq6AqkpXao.jpg"
+  },
+  "nav": [
+    {
+      "label": "About",
+      "href": "#about"
+    },
+    {
+      "label": "Career",
+      "href": "#career"
+    },
+    {
+      "label": "Skills",
+      "href": "#skills"
+    },
+    {
+      "label": "Achievements",
+      "href": "#achievements"
+    },
+    {
+      "label": "Works",
+      "href": "#works"
+    },
+    {
+      "label": "Contact",
+      "href": "#contact"
+    }
+  ],
+  "sections": {
+    "about": "人工知能技術を学ぶため、中国から日本に留学しました<br />人が使いやすく、幅広い分野で役立つものを作りたいです",
+    "career": "これまでの歩み",
+    "skills": "スキルの一部",
+    "languages": "一般人が習得している言葉",
+    "works": "くだらない作品たち...<br />メタバース、遠隔共同作業、音声データ分析に取り組んでいます<br />（詳細については、クリックしてください）",
+    "contact": "Contact"
+  },
+  "brand": "Go soki",
+  "copyrightName": "GoSoki",
+  "copyrightFrom": "2016",
+  "modalTitle": "作品詳細"
 }

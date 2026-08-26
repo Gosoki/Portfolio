@@ -1,0 +1,27 @@
+[
+  {
+    "label": "ホームページ",
+    "url": "//www.wuzuxi.com",
+    "icon": "fa-home"
+  },
+  {
+    "label": "QQ",
+    "url": "https://wpa.qq.com/msgrd?v=3&uin=3113229168&site=qq&menu=yes",
+    "icon": "fa-qq"
+  },
+  {
+    "label": "GitHub",
+    "url": "https://github.com/Gosoki",
+    "icon": "fa-github"
+  },
+  {
+    "label": "ブログ",
+    "url": "//blog.wuzuxi.com",
+    "icon": "fa-pencil-square-o"
+  },
+  {
+    "label": "メール",
+    "url": "mailto:i@wuzuxi.com",
+    "icon": "fa-envelope"
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "title": "氏名",
+    "desc": "Wu Zuxi<br />呉 祖熙",
+    "icon": "icon-user",
+    "url": "#about"
+  },
+  {
+    "title": "所属",
+    "desc": "Faculty of Data Science<br />Musashino University",
+    "icon": "icon-graduation",
+    "url": "https://www.musashino-u.ac.jp/",
+    "external": true
+  },
+  {
+    "title": "研究",
+    "desc": "Real-Time通信, Diffusion model, 3D·XR·VR·AR·MR",
+    "icon": "icon-chemistry",
+    "url": "#works"
+  },
+  {
+    "title": "趣味",
+    "desc": "ものづくり<br />撮影 旅行.",
+    "icon": "icon-camera",
+    "url": "//photo.wuzuxi.com",
+    "external": true
+  }
+]

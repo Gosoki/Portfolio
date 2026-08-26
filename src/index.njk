@@ -93,17 +93,18 @@
 	<div class="loader-wrapper">
 		<div class="loader"></div>
 	</div>
-	<section id="home" class="pfblock-image screen-height">
+	<section id="home" class="pfblock-image screen-height"
+		style="background-image: url('{{ site.hero.background }}')">
 		<div class="home-overlay"></div>
 		<div class="intro">
-			<img class="intro-avatar" src="img/me.png" width="200" height="200" decoding="async"
-				alt="呉 祖熙のプロフィール写真" />
+			<img class="intro-avatar" src="{{ site.hero.avatar }}" width="200" height="200" decoding="async"
+				alt="{{ site.hero.name }}のプロフィール写真" />
 
 			<h1>
-				<ruby>呉 祖熙<rp>（</rp><rt>ゴ ソキ</rt><rp>）</rp></ruby>
+				<ruby>{{ site.hero.name }}<rp>（</rp><rt>{{ site.hero.ruby }}</rt><rp>）</rp></ruby>
 			</h1>
 
-			<div class="start">Portfolio<br /><br />未知の高みへ向かって</div>
+			<div class="start">{{ site.hero.tagline }}<br /><br />{{ site.hero.subtitle | safe }}</div>
 		</div>
 
 		<a href="#about" aria-label="About セクションへ移動">
@@ -130,17 +131,14 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="index.html" style="font-family: sans-serif">Go soki</a>
+					<a class="navbar-brand" href="index.html" style="font-family: sans-serif">{{ site.brand }}</a>
 				</div>
 
 				<div class="collapse navbar-collapse" id="custom-collapse">
 					<ul class="nav navbar-nav navbar-right">
-						<li><a href="#about">About</a></li>
-						<li><a href="#career">Career</a></li>
-						<li><a href="#skills">Skills</a></li>
-						<li><a href="#achievements">Achievements</a></li>
-						<li><a href="#works">Works</a></li>
-						<li><a href="#contact">Contact</a></li>
+						{%- for item in site.nav %}
+						<li><a href="{{ item.href }}">{{ item.label }}</a></li>
+						{%- endfor %}
 					</ul>
 				</div>
 			</div>
@@ -158,78 +156,29 @@
 					<div class="pfblock-header wow fadeInUp">
 						<h2 class="pfblock-title">About</h2>
 						<div class="pfblock-line"></div>
-						<div class="pfblock-subtitle">
-							人工知能技術を学ぶため、中国から日本に留学しました<br />
-							人が使いやすく、幅広い分野で役立つものを作りたいです
-						</div>
+						<div class="pfblock-subtitle">{{ site.sections.about | safe }}</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="row">
+				{#- アイコン枠は _data/about.json から。
+				    アニメーションは前半が左から、後半が右から入るよう自動で振り分ける #}
+				{%- for box in about %}
 				<div class="col-xs-12 col-sm-6 col-md-3">
-					<div class="iconbox wow slideInLeft">
-						<a href="#about">
+					<div class="iconbox wow {% if loop.index0 < (about | length / 2) %}slideInLeft{% else %}slideInRight{% endif %}">
+						<a href="{{ box.url }}"{% if box.external %} target="_blank" rel="noopener noreferrer"{% endif %}>
 							<div class="iconbox-icon">
-								<span class="icon-user"></span>
+								<span class="{{ box.icon }}"></span>
 							</div>
 							<div class="iconbox-text">
-								<h3 class="iconbox-title">氏名</h3>
+								<h3 class="iconbox-title">{{ box.title }}</h3>
 							</div>
 						</a>
-						<div class="iconbox-desc">Wu Zuxi<br />呉 祖熙</div>
+						<div class="iconbox-desc">{{ box.desc | safe }}</div>
 					</div>
 				</div>
-
-				<div class="col-xs-12 col-sm-6 col-md-3">
-					<div class="iconbox wow slideInLeft">
-						<a href="https://www.musashino-u.ac.jp/" target="_blank" rel="noopener noreferrer">
-							<div class="iconbox-icon">
-								<span class="icon-graduation"></span>
-							</div>
-							<div class="iconbox-text">
-								<h3 class="iconbox-title">所属</h3>
-							</div>
-						</a>
-						<div class="iconbox-desc">
-							Faculty of Data Science<br />Musashino University
-						</div>
-					</div>
-				</div>
-
-				<div class="col-xs-12 col-sm-6 col-md-3">
-					<div class="iconbox wow slideInRight">
-						<a href="#works">
-							<div class="iconbox-icon">
-								<span class="icon-chemistry"></span>
-							</div>
-							<div class="iconbox-text">
-								<h3 class="iconbox-title">研究</h3>
-							</div>
-						</a>
-						<div class="iconbox-desc">
-							Real-Time通信, Diffusion model, 3D·XR·VR·AR·MR
-						</div>
-					</div>
-				</div>
-
-				<div class="col-xs-12 col-sm-6 col-md-3">
-					<div class="iconbox wow slideInRight">
-						<a href="//photo.wuzuxi.com" target="_blank" rel="noopener noreferrer">
-							<div class="iconbox-icon">
-								<span class="icon-camera"></span>
-							</div>
-
-							<div class="iconbox-text">
-								<h3 class="iconbox-title">趣味</h3>
-
-							</div>
-						</a>
-						<div class="iconbox-desc">
-							ものづくり<br />撮影 旅行.
-						</div>
-					</div>
-				</div>
+				{%- endfor %}
 			</div>
 		</div>
 	</section>
@@ -243,7 +192,7 @@
 					<div class="pfblock-header wow fadeInUp">
 						<h2 class="pfblock-title">Career</h2>
 						<div class="pfblock-line"></div>
-						<div class="pfblock-subtitle">これまでの歩み</div>
+						<div class="pfblock-subtitle">{{ site.sections.career | safe }}</div>
 					</div>
 				</div>
 			</div>
@@ -283,7 +232,7 @@
 					<div class="pfblock-header wow fadeInUp">
 						<h2 class="pfblock-title">Skills</h2>
 						<div class="pfblock-line"></div>
-						<div class="pfblock-subtitle">スキルの一部</div>
+						<div class="pfblock-subtitle">{{ site.sections.skills | safe }}</div>
 					</div>
 				</div>
 			</div>
@@ -302,7 +251,7 @@
 			<div class="row skills">
 				<div class="col-xs-12 pfblock-header wow fadeInUp">
 					<div class="pfblock-line"></div>
-					<div class="pfblock-subtitle text-center">一般人が習得している言葉</div>
+					<div class="pfblock-subtitle text-center">{{ site.sections.languages | safe }}</div>
 				</div>
 
 				{%- for lang in languages %}
@@ -371,7 +320,7 @@
 					<div class="pfblock-header wow fadeInUp">
 						<h2 class="pfblock-title">Works</h2>
 						<div class="pfblock-line"></div>
-						<div class="pfblock-subtitle">くだらない作品たち...<br />メタバース、遠隔共同作業、音声データ分析に取り組んでいます<br />（詳細については、クリックしてください）</div>
+						<div class="pfblock-subtitle">{{ site.sections.works | safe }}</div>
 					</div>
 				</div>
 			</div>
@@ -423,7 +372,7 @@
 		aria-hidden="true">
 		<div class="work-modal-content">
 			<div class="work-modal-header">
-				<h2 id="modalTitle">作品詳細</h2>
+				<h2 id="modalTitle">{{ site.modalTitle }}</h2>
 				<button type="button" class="close-modal" aria-label="閉じる">&times;</button>
 			</div>
 			<div class="work-modal-body" id="modalBody">
@@ -441,33 +390,20 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="pfblock-subtitle text-center">
-						Contact<br /><br />
+						{{ site.sections.contact }}<br /><br />
 					</div>
+					{#- リンクは _data/social.json から。表示の遅延は並び順から自動計算 #}
 					<ul class="social-links">
+						{%- for link in social %}
 						<li>
-							<a href="//www.wuzuxi.com" target="_blank" rel="noopener noreferrer" aria-label="ホームページ"
-								class="wow fadeInUp"><i class="fa fa-home" aria-hidden="true"></i></a>
+							<a href="{{ link.url }}"{% if not link.url.startsWith("mailto:") %} target="_blank" rel="noopener noreferrer"{% endif %}
+								aria-label="{{ link.label }}" class="wow fadeInUp"{% if not loop.first %} data-wow-delay="{{ (loop.index0 * 0.2) | round(1) }}s"{% endif %}><i
+									class="fa {{ link.icon }}" aria-hidden="true"></i></a>
 						</li>
-						<li>
-							<a href="https://wpa.qq.com/msgrd?v=3&amp;uin=3113229168&amp;site=qq&amp;menu=yes"
-								target="_blank" rel="noopener noreferrer" aria-label="QQ"
-								class="wow fadeInUp" data-wow-delay=".2s"><i class="fa fa-qq" aria-hidden="true"></i></a>
-						</li>
-						<li>
-							<a href="https://github.com/Gosoki" target="_blank" rel="noopener noreferrer" aria-label="GitHub"
-								class="wow fadeInUp" data-wow-delay=".4s"><i class="fa fa-github" aria-hidden="true"></i></a>
-						</li>
-						<li>
-							<a href="//blog.wuzuxi.com" target="_blank" rel="noopener noreferrer" aria-label="ブログ"
-								class="wow fadeInUp" data-wow-delay=".6s"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-						</li>
-						<li>
-							<a href="mailto:i@wuzuxi.com" aria-label="メール"
-								class="wow fadeInUp" data-wow-delay=".8s"><i class="fa fa-envelope" aria-hidden="true"></i></a>
-						</li>
+						{%- endfor %}
 					</ul>
 					<p class="copyright">
-						Copyright © 2016-<span id="copyrightYear">2026</span>. GoSoki All rights reserved.<br />
+						Copyright © {{ site.copyrightFrom }}-<span id="copyrightYear">2026</span>. {{ site.copyrightName }} All rights reserved.<br />
 					</p>
 				</div>
 			</div>

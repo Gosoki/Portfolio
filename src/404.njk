@@ -1,0 +1,104 @@
+---
+permalink: /404.html
+eleventyExcludeFromCollections: true
+---
+<!DOCTYPE html>
+<html lang="{{ site.lang }}">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="robots" content="noindex" />
+	<title>404 | {{ site.siteName }}</title>
+	<link rel="icon" type="image/png" href="/{{ site.ogImage }}" />
+	<style>
+		:root {
+			--text: #333;
+			--muted: #888;
+			--line: #e3e6ea;
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 4px;
+			padding: 24px;
+			text-align: center;
+			color: var(--text);
+			background: #f5f5f5;
+			font: 300 15px/1.8 -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Kaku Gothic ProN',
+				'Yu Gothic', 'Meiryo', 'Noto Sans CJK JP', sans-serif;
+		}
+
+		img {
+			width: 96px;
+			height: 96px;
+			border-radius: 50%;
+			border: 3px solid #fff;
+			box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+			margin-bottom: 22px;
+			object-fit: cover;
+		}
+
+		h1 {
+			margin: 0;
+			font-size: 56px;
+			font-weight: 800;
+			letter-spacing: 6px;
+			line-height: 1;
+		}
+
+		.line {
+			width: 60px;
+			height: 3px;
+			border-radius: 2px;
+			background: var(--text);
+			margin: 22px auto;
+		}
+
+		p {
+			margin: 0;
+			color: var(--muted);
+		}
+
+		a {
+			display: inline-block;
+			margin-top: 26px;
+			padding: 11px 26px;
+			border-radius: 6px;
+			background: var(--text);
+			color: #fff;
+			text-decoration: none;
+			font-weight: 500;
+			letter-spacing: 1px;
+			transition: transform .2s ease, box-shadow .2s ease;
+		}
+
+		a:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 16px rgba(0, 0, 0, .22);
+		}
+
+		@media (prefers-color-scheme: dark) {
+			:root { --text: #e6e8eb; --muted: #9aa3ad; }
+			body { background: #1b1e22; }
+			a { background: #e6e8eb; color: #1b1e22; }
+		}
+	</style>
+</head>
+
+<body>
+	<img src="/{{ site.hero.avatar }}" alt="{{ site.hero.name }}" />
+	<h1>404</h1>
+	<div class="line"></div>
+	<p>お探しのページは見つかりませんでした。</p>
+	<a href="/">トップへ戻る</a>
+</body>
+
+</html>

@@ -33,13 +33,17 @@ npm run build    # _site/ に書き出す
 `http://<この PC の IP>:8233/tools/editor.html` で開ける。
 ブラウザは何でもよい（Chrome / Firefox / Safari / Edge）。
 
-1. 上のタブで 作品 / 経歴 / スキル / 言語 / 実績 を切り替える
+1. 上のタブで 作品 / 経歴 / About 枠 / SNS / サイト設定 / スキル / 言語 / 実績 を切り替える
 2. 「＋ 新しく追加」でひな形が出るので、**「必須」の欄だけ埋めればよい**
 3. 「保存」または `Ctrl + S` で `src/_data/*.json` へ書き戻る
 
+**編集を楽にする仕掛け**
+
 - **「任意」の欄は空のままで構わない。** 空欄は JSON に書き出されないので、ファイルは汚れない
 - 既にある項目はクリックすればそのまま直せる。`↑` `↓` で並べ替え、「削除」で消せる
-- 作品の画像は「画像ファイルを選ぶ…」から選ぶと、`src/img/` へ送られ**寸法も自動で埋まる**
+- **「複製して追加」** … 似た内容を続けて足すとき、今の項目をコピーして次を作れる（作品の ID は自動で振り直される）
+- **絞り込み欄** … 一覧の上の検索欄に打つと、見出しだけでなく**説明文やキーワードの中身も対象に**絞り込める。スキル 24 件から目当ての 1 件を探すときに効く
+- **画像は選ぶだけ** … 「画像を選ぶ…」でファイルを指定すると `src/img/` へ送られ、**寸法も自動で埋まる**。作品画像だけでなく、プロフィール画像・首屏の背景画像も同じように差し替えられる
 - 埋め込みの ID 欄には共有 URL をそのまま貼ってよい（ID だけ取り出す）
 - 必須が埋まっていないと保存を止めるので、書きかけのまま壊れることはない
 - 書き込みは一時ファイル経由なので、途中で失敗しても元のファイルは壊れない
@@ -161,11 +165,50 @@ LAN の別端末から書き込みがあった場合は、`npm start` を動か�
 
 新しい列を増やしたい場合は配列にオブジェクトを足す（`icon` は Font Awesome のクラス名）。
 
-### サイト全体の情報
+### About の 4 つの枠を編集する
 
-`src/_data/site.json` にタイトル・説明文・ドメインをまとめてある。
-**ドメインを変えるときはここ 1 か所**（canonical / OGP / favicon が連動する）。
-あわせて `src/CNAME` も書き換えること。
+`src/_data/about.json`。氏名・所属・研究・趣味の枠がここに入っている。
+
+```jsonc
+{
+  "title": "研究",
+  "desc": "Real-Time通信, Diffusion model",  // <br /> で改行できる
+  "icon": "icon-chemistry",                  // Simple Line Icons のクラス名
+  "url": "#works",                           // ページ内なら #id、外部なら https://…
+  "external": false                          // 外部リンクなら true（別タブで開く）
+}
+```
+
+**アニメーションの向きは自動。** 前半が左から、後半が右から入る。枠を増やしても指定不要。
+
+### SNS リンクを編集する
+
+`src/_data/social.json`。フッターのアイコン列。
+
+```jsonc
+{ "label": "GitHub", "url": "https://github.com/Gosoki", "icon": "fa-github" }
+```
+
+`url` を `mailto:` で始めるとメールリンクになり、別タブ指定も自動で外れる。
+表示の遅延も並び順から自動計算される。
+
+### サイト全体の設定・文言
+
+`src/_data/site.json`。エディタの「サイト設定」タブからも編集できる。
+
+ここに入っているもの:
+
+| 項目 | 効くところ |
+|---|---|
+| `title` / `description` | 検索結果の見出しと説明（SEO） |
+| `url` | canonical / OGP / sitemap。**ドメイン変更はここ 1 か所**（あわせて `src/CNAME` も） |
+| `hero.name` / `hero.ruby` | 首屏の氏名とふりがな |
+| `hero.avatar` / `hero.background` | プロフィール画像と背景画像。**エディタから差し替えられる** |
+| `hero.tagline` / `hero.subtitle` | 首屏の見出しと一言 |
+| `sections.*` | 各セクションの説明文（About / Career / Skills / 言語 / Works / Contact） |
+| `nav` | ヘッダーのメニュー項目 |
+| `brand` | ヘッダー左のロゴ文字 |
+| `person.*` | 構造化データ用の人物情報（表記ゆれなど） |
 
 ---
 
@@ -175,7 +218,9 @@ LAN の別端末から書き込みがあった場合は、`npm start` を動か�
 src/
 ├── index.njk              ページ本体（テンプレート）
 ├── _data/                 ← 内容はすべてここ
-│   ├── site.json          サイト情報・ドメイン
+│   ├── site.json          サイト情報・ドメイン・各セクションの文言
+│   ├── about.json         About の 4 つの枠
+│   ├── social.json        フッターの SNS リンク
 │   ├── career.json        経歴（Career の横タイムライン）
 │   ├── skills.json        スキル 24 件
 │   ├── languages.json     言語 4 件
@@ -186,14 +231,31 @@ src/
 │   ├── css/custom.css     ← 見た目の調整はこちら
 │   └── js/custom.js       固定ヘッダー・首屏の高さ
 ├── img/                   作品画像
+├── sitemap.njk            → /sitemap.xml
+├── robots.njk             → /robots.txt
+├── 404.njk                → /404.html
 └── CNAME                  独自ドメイン設定
 
 tools/editor.html          データ編集エディタ（開発時のみ配信）
+tools/editor-api.js        エディタの読み書き API（開発サーバに差し込まれる）
 .eleventy.js               ビルド設定・埋め込み HTML の組み立て
 ```
 
 見た目を直すときは `src/assets/css/custom.css`。
 `style.css` はテンプレート由来なので、原則そちらを上書きする形で当てる。
+
+**`index.njk` に直接書かれた文言はもう無い。** 文章を直したいときは
+`src/_data/` の JSON（多くは `site.json`）を見ればよい。
+
+### 画像について
+
+`src/img/` は圧縮済み（GIF は `gifsicle -O3 --lossy=60`、PNG は `pngquant`）。
+新しい画像を足したら、同じように通しておくと表示が軽くなる。
+
+```bash
+gifsicle -O3 --lossy=60 src/img/new.gif -o src/img/new.gif
+pngquant --quality=80-95 --force --output src/img/new.png src/img/new.png
+```
 
 ---
 

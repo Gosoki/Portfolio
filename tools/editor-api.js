@@ -18,7 +18,16 @@ const ROOT = path.resolve(__dirname, "..");
 const DATA_DIR = path.join(ROOT, "src", "_data");
 const IMG_DIR = path.join(ROOT, "src", "img");
 
-const DATA_FILES = ["works.json", "career.json", "skills.json", "languages.json", "achievements.json", "site.json"];
+const DATA_FILES = [
+	"works.json",
+	"career.json",
+	"skills.json",
+	"languages.json",
+	"achievements.json",
+	"about.json",
+	"social.json",
+	"site.json",
+];
 const IMAGE_EXT = new Set([".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"]);
 const MAX_BODY = 32 * 1024 * 1024; // 32 MB
 

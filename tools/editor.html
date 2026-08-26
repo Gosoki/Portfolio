@@ -49,7 +49,7 @@
 		/* ---------- レイアウト ---------- */
 		#app {
 			display: grid;
-			grid-template-rows: auto 1fr;
+			grid-template-rows: auto auto 1fr;
 			height: 100vh;
 		}
 
@@ -94,21 +94,34 @@
 			overflow: hidden;
 		}
 
+		/* タブはヘッダー直下の全幅。項目が増えても窮屈にならない */
 		#tabs {
 			display: flex;
+			align-items: stretch;
+			gap: 2px;
+			padding: 0 12px;
+			background: var(--panel);
 			border-bottom: 1px solid var(--line);
+			overflow-x: auto;
+			scrollbar-width: thin;
 		}
 
 		#tabs button {
-			flex: 1;
-			padding: 9px 4px;
+			flex: none;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			padding: 10px 14px;
 			border: 0;
 			border-bottom: 2px solid transparent;
 			background: transparent;
 			cursor: pointer;
-			font-size: 12.5px;
+			font-size: 13px;
+			white-space: nowrap;
 			color: var(--muted);
 		}
+
+		#tabs button:hover { color: var(--text); }
 
 		#tabs button.on {
 			color: var(--accent);
@@ -116,10 +129,51 @@
 			font-weight: 700;
 		}
 
+		/* 件数は小さなバッジとして横に置く */
 		#tabs button .n {
+			font-size: 11px;
+			font-weight: 600;
+			padding: 1px 6px;
+			border-radius: 999px;
+			background: var(--bg);
+			border: 1px solid var(--line);
+			opacity: .85;
+		}
+
+		#tabs button.on .n {
+			background: var(--accent-soft);
+			border-color: var(--accent);
+		}
+
+		/* 用途のちがうタブのあいだに入れる区切り */
+		#tabs .sep {
+			flex: none;
+			width: 1px;
+			background: var(--line);
+			margin: 9px 10px;
+		}
+
+		#searchbar {
+			padding: 6px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		#searchbar input {
+			width: 100%;
+			padding: 5px 9px;
+			font-size: 12.5px;
+			border: 1px solid var(--line);
+			border-radius: 6px;
+			background: var(--bg);
+		}
+
+		.thumb {
+			max-width: 120px;
+			max-height: 90px;
+			border: 1px solid var(--line);
+			border-radius: 6px;
+			margin-top: 8px;
 			display: block;
-			font-size: 10.5px;
-			opacity: .75;
 		}
 
 		#list {
@@ -368,9 +422,12 @@
 			<button class="btn" id="reload">読み直す</button>
 			<span id="status">読み込み中…</span>
 		</header>
+		<nav id="tabs" hidden></nav>
 		<main>
 			<div id="side" hidden>
-				<div id="tabs"></div>
+				<div id="searchbar">
+					<input type="search" id="search" placeholder="名前で絞り込み…" autocomplete="off" />
+				</div>
 				<div id="list"></div>
 				<div style="padding:8px;border-top:1px solid var(--line)">
 					<button class="btn" id="add" style="width:100%">＋ 新しく追加</button>
@@ -419,6 +476,30 @@
 					{ k: 'current', label: '現在も継続中', type: 'bool', onLabel: '継続中として表示する', offLabel: '終了した経歴', hint: '丸を塗りつぶし、「現在」バッジを付ける' }
 				]
 			},
+			about: {
+				file: 'about.json', label: 'About 枠',
+				title: (it) => it.title || '(無題)',
+				sub: (it) => it.icon || '',
+				template: () => ({ icon: 'icon-star', title: '', desc: '', url: '#about', external: false }),
+				fields: [
+					{ k: 'title', label: '見出し', type: 'text', req: true, hint: '例: 氏名 / 所属 / 研究 / 趣味' },
+					{ k: 'desc', label: '説明', type: 'textarea', req: true, hint: '&lt;br /&gt; で改行できる' },
+					{ k: 'icon', label: 'アイコン', type: 'text', req: true, hint: 'Simple Line Icons のクラス名。例: icon-user / icon-graduation / icon-camera' },
+					{ k: 'url', label: 'リンク先', type: 'text', hint: 'ページ内なら #works、外部なら https://…' },
+					{ k: 'external', label: '別タブで開く', type: 'bool', onLabel: '別タブで開く', offLabel: '同じタブで開く', hint: '外部サイトへのリンクならオンにする' }
+				]
+			},
+			social: {
+				file: 'social.json', label: 'SNS',
+				title: (it) => it.label || '(無題)',
+				sub: (it) => it.icon || '',
+				template: () => ({ icon: 'fa-link', label: '', url: '' }),
+				fields: [
+					{ k: 'label', label: '名前', type: 'text', req: true, hint: '読み上げ用。例: GitHub / ブログ' },
+					{ k: 'url', label: 'URL', type: 'text', req: true, hint: 'mailto: で始めるとメールリンクになる' },
+					{ k: 'icon', label: 'アイコン', type: 'text', req: true, hint: 'Font Awesome のクラス名。例: fa-github / fa-envelope' }
+				]
+			},
 			skills: {
 				file: 'skills.json', label: 'スキル',
 				title: (it) => it.name || '(無題)',
@@ -441,8 +522,34 @@
 					{ k: 'detail', label: '説明', type: 'textarea', req: true, hint: '例: 日常会話レベル' }
 				]
 			},
+			site: {
+				file: 'site.json', label: 'サイト設定', single: true,
+				fields: [
+					{ k: 'title', label: 'ページタイトル', type: 'text', req: true, hint: '検索結果の見出しになる。日本語で 30 文字前後が目安' },
+					{ k: 'description', label: '説明文', type: 'textarea', req: true, hint: '検索結果に出る説明。120 文字前後。名前の表記ゆれを入れておくと拾われやすい' },
+					{ k: 'siteName', label: 'サイト名', type: 'text', req: true, hint: 'OGP の og:site_name に使う' },
+					{ k: 'shortDescription', label: '短い説明', type: 'textarea', req: true, hint: 'SNS シェア時に出る説明' },
+					{ k: 'url', label: 'サイト URL', type: 'text', req: true, hint: 'ドメインを変えるときはここと src/CNAME の両方を直す' },
+					{ k: 'hero.name', label: '首屏：氏名', type: 'text', req: true },
+					{ k: 'hero.ruby', label: '首屏：ふりがな', type: 'text', hint: '氏名の上に小さく出る' },
+					{ k: 'hero.tagline', label: '首屏：見出し', type: 'text' },
+					{ k: 'hero.subtitle', label: '首屏：一言', type: 'text' },
+					{ k: 'hero.avatar', label: 'プロフィール画像', type: 'image', req: true },
+					{ k: 'hero.background', label: '首屏の背景画像', type: 'image', hint: '外部 URL でも、アップロードした画像でもよい' },
+					{ k: 'brand', label: 'ヘッダーのロゴ文字', type: 'text' },
+					{ k: 'sections.about', label: 'About の説明', type: 'textarea', hint: '&lt;br /&gt; で改行できる' },
+					{ k: 'sections.career', label: 'Career の説明', type: 'text' },
+					{ k: 'sections.skills', label: 'Skills の説明', type: 'text' },
+					{ k: 'sections.languages', label: '言語スキルの見出し', type: 'text' },
+					{ k: 'sections.works', label: 'Works の説明', type: 'textarea' },
+					{ k: 'sections.contact', label: 'Contact の見出し', type: 'text' },
+					{ k: 'copyrightName', label: '著作権表示の名前', type: 'text' },
+					{ k: 'copyrightFrom', label: '著作権の開始年', type: 'text' },
+					{ k: 'modalTitle', label: '作品モーダルの既定見出し', type: 'text' }
+				]
+			},
 			achievements: {
-				file: 'achievements.json', label: '経歴',
+				file: 'achievements.json', label: '実績',
 				grouped: true,
 				template: () => ({ year: '', title: '', venue: '', desc: '' }),
 				colTemplate: () => ({ icon: 'fa-trophy', title: '', items: [] }),
@@ -466,13 +573,20 @@
 			link: { label: 'ただのリンク', idHint: '', defH: 0 }
 		};
 
-		const KINDS = Object.keys(SCHEMAS);
+		// タブの並びと区切り。左が「載せる中身」、右が「サイトの設定」。
+		// ここに並べた順にタブが出る
+		const TAB_GROUPS = [
+			['works', 'career', 'achievements', 'skills', 'languages'],
+			['about', 'social', 'site']
+		];
+		const KINDS = TAB_GROUPS.flat();
 
 		// ==============================================================
 		// 状態
 		// ==============================================================
 		let store = {};                 // kind -> データ
 		let kind = 'works';
+		let filterText = '';
 		let sel = null;                 // works/skills/languages: index / achievements: {c,i} または {c,col:true}
 		const dirty = new Set();
 
@@ -524,10 +638,12 @@
 				sel = null;
 				restoreView();
 				$('side').hidden = false;
+				$('tabs').hidden = false;
 				render();
 				status('読み込み完了');
 			} catch (e) {
 				$('side').hidden = true;
+				$('tabs').hidden = true;
 				$('pane').textContent = '';
 				$('pane').append(el('div', { className: 'empty' }, [
 					el('div', {
@@ -563,6 +679,16 @@
 		// 空の任意項目を落とし、スキーマの順にキーを並べ直す
 		function normalizeAll(k) {
 			const S = SCHEMAS[k];
+			if (S.single) {
+				// 配列ではなく 1 個のオブジェクト。スキーマに無いキーも消さずに残す
+				const o = Object.assign({}, store[k]);
+				for (const f of S.fields) {
+					const v = getPath(store[k], f.k);
+					if (isBlank(v)) continue;
+					setPath(o, f.k, v);
+				}
+				return o;
+			}
 			if (S.grouped) {
 				return store[k].map((col) => ({
 					icon: col.icon, title: col.title,
@@ -618,7 +744,9 @@
 			const out = [];
 			for (const k of KINDS) {
 				const S = SCHEMAS[k];
-				const lists = S.grouped ? store[k].map((c) => c.items) : [store[k]];
+				const lists = S.single ? [[store[k]]]
+					: S.grouped ? store[k].map((c) => c.items)
+						: [store[k]];
 				lists.forEach((list, ci) => {
 					list.forEach((it, i) => {
 						for (const f of S.fields) {
@@ -689,16 +817,35 @@
 		function renderTabs() {
 			const t = $('tabs');
 			t.textContent = '';
-			for (const k of KINDS) {
-				const S = SCHEMAS[k];
-				const n = S.grouped
-					? store[k].reduce((a, c) => a + c.items.length, 0)
-					: (store[k] || []).length;
-				const b = el('button', { className: k === kind ? 'on' : '', title: S.file });
-				b.append(S.label + (dirty.has(k) ? ' ●' : ''), el('span', { className: 'n', textContent: n + ' 件' }));
-				b.onclick = () => { kind = k; sel = null; render(); };
-				t.append(b);
-			}
+			t.hidden = false;
+
+			TAB_GROUPS.forEach((group, gi) => {
+				if (gi > 0) t.append(el('div', { className: 'sep' }));
+
+				for (const k of group) {
+					const S = SCHEMAS[k];
+					const n = S.single ? null
+						: S.grouped
+							? store[k].reduce((a, c) => a + c.items.length, 0)
+							: (store[k] || []).length;
+
+					const b = el('button', {
+						className: k === kind ? 'on' : '',
+						title: S.file + (dirty.has(k) ? '（未保存の変更あり）' : '')
+					});
+					b.append(S.label + (dirty.has(k) ? ' ●' : ''));
+					if (n !== null) b.append(el('span', { className: 'n', textContent: String(n) }));
+
+					b.onclick = () => {
+						kind = k;
+						sel = null;
+						filterText = '';
+						$('search').value = '';
+						render();
+					};
+					t.append(b);
+				}
+			});
 		}
 
 		function moveBtns(list, i, onMove) {
@@ -719,20 +866,36 @@
 			return wrap;
 		}
 
+		// 絞り込み。見出しだけでなく中身も対象にするので、
+		// スキル説明や作品のキーワードからでも探せる
+		function matches(it) {
+			if (!filterText) return true;
+			return JSON.stringify(it).toLowerCase().includes(filterText);
+		}
+
 		function renderList() {
 			const box = $('list');
 			box.textContent = '';
 			const S = SCHEMAS[kind];
+			$('searchbar').hidden = Boolean(S.single);
+
+			if (S.single) {
+				// 項目が 1 つしかないので一覧は出さない
+				sel = 0;
+				return;
+			}
 
 			if (S.grouped) {
 				store[kind].forEach((col, c) => {
+					const hits = col.items.filter(matches);
+					if (filterText && !hits.length) return;
 					const head = el('div', { className: 'group' });
 					head.append(col.title || '(列 ' + (c + 1) + ')');
 					const edit = el('button', { className: 'btn sm', textContent: '列を編集', style: 'float:right;font-size:11px' });
 					edit.onclick = () => { sel = { c: c, col: true }; render(); };
 					head.append(edit);
 					box.append(head);
-					col.items.forEach((it, i) => box.append(itemRow(it, i, col.items,
+					col.items.forEach((it, i) => matches(it) && box.append(itemRow(it, i, col.items,
 						sel && sel.c === c && sel.i === i && !sel.col,
 						() => { sel = { c: c, i: i }; render(); },
 						(ni) => { sel = { c: c, i: ni }; })));
@@ -744,8 +907,16 @@
 				box.append(el('div', { className: 'empty', textContent: 'まだ 1 件もありません' }));
 				return;
 			}
-			store[kind].forEach((it, i) => box.append(itemRow(it, i, store[kind], sel === i,
-				() => { sel = i; render(); }, (ni) => { sel = ni; })));
+			let shown = 0;
+			store[kind].forEach((it, i) => {
+				if (!matches(it)) return;
+				shown++;
+				box.append(itemRow(it, i, store[kind], sel === i,
+					() => { sel = i; render(); }, (ni) => { sel = ni; }));
+			});
+			if (!shown) {
+				box.append(el('div', { className: 'empty', textContent: '「' + filterText + '」に一致する項目はありません' }));
+			}
 		}
 
 		function itemRow(it, i, list, on, onClick, onMove) {
@@ -774,7 +945,10 @@
 			}
 
 			let item, fields, list, idx;
-			if (S.grouped) {
+			if (S.single) {
+				item = store[kind];
+				fields = S.fields;
+			} else if (S.grouped) {
 				if (sel.col) { item = store[kind][sel.c]; fields = S.colFields; }
 				else { list = store[kind][sel.c].items; idx = sel.i; item = list[idx]; fields = S.fields; }
 			} else {
@@ -793,16 +967,32 @@
 
 			for (const f of fields) p.append(fieldEl(f, item));
 
-			if (!(S.grouped && sel.col)) {
+			if (!S.single && !(S.grouped && sel.col)) {
+				const bar = el('div', { style: 'margin-top:26px;display:flex;gap:10px;flex-wrap:wrap' });
+
+				// 似た内容を続けて足すとき用。作品だけは ID が衝突しないよう振り直す
+				const dup = el('button', { className: 'btn', textContent: '複製して追加' });
+				dup.onclick = () => {
+					const copy = JSON.parse(JSON.stringify(item));
+					if (kind === 'works') copy.id = nextWorkId();
+					list.splice(idx + 1, 0, copy);
+					sel = S.grouped ? { c: sel.c, i: idx + 1 } : idx + 1;
+					touch();
+					render();
+					$('pane').scrollTop = 0;
+				};
+				bar.append(dup);
+
 				const del = el('button', { className: 'btn danger', textContent: 'この項目を削除' });
 				del.onclick = () => {
 					if (!confirm('削除します。よろしいですか？')) return;
 					list.splice(idx, 1);
 					sel = null;
 					touch();
-					renderForm();
+					render();
 				};
-				p.append(el('div', { style: 'margin-top:26px' }, [del]));
+				bar.append(del);
+				p.append(bar);
 			}
 		}
 
@@ -847,6 +1037,10 @@
 				};
 			} else if (f.type === 'images') {
 				box.append(imagesEl(item, f));
+				if (f.hint) box.append(el('div', { className: 'hint', innerHTML: f.hint }));
+				return box;
+			} else if (f.type === 'image') {
+				box.append(imageField(item, f));
 				if (f.hint) box.append(el('div', { className: 'hint', innerHTML: f.hint }));
 				return box;
 			} else if (f.type === 'media') {
@@ -901,8 +1095,9 @@
 			return wrap;
 		}
 
-		// 画像を選ぶ → サーバの src/img/ へ送る → 実寸は手元で測って自動入力
-		function addImageFromDisk(list) {
+		// 画像を 1 枚選ばせ、サーバの src/img/ へ送る。
+		// 実寸は送る前に手元で測るので、幅・高さの入力も要らない。
+		function pickImage(onDone) {
 			const input = el('input', { type: 'file', accept: 'image/*' });
 			input.style.display = 'none';
 			document.body.append(input);
@@ -911,16 +1106,12 @@
 				const file = input.files && input.files[0];
 				input.remove();
 				if (!file) return;
-
 				try {
 					status('アップロード中… ' + file.name);
 					const dim = await readSize(file);
 					const r = await api('POST', '/api/image/' + encodeURIComponent(file.name),
 						file, file.type || 'application/octet-stream');
-
-					list.push({ src: r.src, alt: '', width: dim.w, height: dim.h });
-					touch();
-					renderForm();
+					onDone({ src: r.src, width: dim.w, height: dim.h });
 					status('src/' + r.src + ' に保存しました（' + dim.w + '×' + dim.h + '）'
 						+ (r.overwritten ? ' ※ 同名ファイルを上書き' : ''));
 				} catch (e) {
@@ -928,6 +1119,45 @@
 				}
 			};
 			input.click();
+		}
+
+		// 単体の画像フィールド（プロフィール画像・背景画像など）
+		function imageField(item, f) {
+			const wrap = el('div');
+			const input = el('input', { type: 'text', value: getPath(item, f.k) || '' });
+			input.oninput = () => { setPath(item, f.k, input.value); touch(); };
+			if (f.req && isBlank(getPath(item, f.k))) input.classList.add('invalid');
+			wrap.append(input);
+
+			const bar = el('div', { style: 'display:flex;gap:8px;margin-top:8px' });
+			const pick = el('button', { className: 'btn sm', textContent: '画像を選ぶ…' });
+			pick.onclick = () => pickImage((r) => {
+				setPath(item, f.k, r.src);
+				touch();
+				renderForm();
+			});
+			bar.append(pick);
+			wrap.append(bar);
+
+			const v = getPath(item, f.k);
+			if (v) {
+				const src = /^https?:\/\//.test(v) ? v : '/' + v;
+				const img = el('img', { className: 'thumb', src: src, alt: '' });
+				img.onerror = () => img.remove();
+				wrap.append(img);
+			}
+			return wrap;
+		}
+
+		function addImageFromDisk(list) {
+			const input = el('input');
+
+			input.remove();
+			pickImage((r) => {
+				list.push({ src: r.src, alt: '', width: r.width, height: r.height });
+				touch();
+				renderForm();
+			});
 		}
 
 		function readSize(file) {
@@ -1024,6 +1254,7 @@
 		// ==============================================================
 		$('add').onclick = () => {
 			const S = SCHEMAS[kind];
+			if (S.single) return;
 			if (S.grouped) {
 				const c = sel && sel.c != null ? sel.c : 0;
 				store[kind][c].items.push(S.template());
@@ -1043,6 +1274,11 @@
 			const ns = store.works.map((w) => +(String(w.id).match(/(\d+)$/) || [0, 0])[1]);
 			return 'work' + (Math.max(0, ...ns) + 1);
 		}
+
+		$('search').oninput = () => {
+			filterText = $('search').value.trim().toLowerCase();
+			renderList();
+		};
 
 		$('save').onclick = () => saveAll();
 		$('reload').onclick = () => {
