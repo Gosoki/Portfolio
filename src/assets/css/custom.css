@@ -9,6 +9,10 @@
 	--primary-color: #333;
 	--secondary-color: #666;
 	--accent-color: #999;
+	/* 補足文の文字色。#999 だと白地で 2.85、灰色地で 2.61 しかなく、
+	   WCAG AA（4.5）に届かない。装飾には引き続き --accent-color を使い、
+	   文字にはこちらを使う */
+	--text-muted: #707070;
 	--text-dark: #333;
 	--hover-color: #555;
 }
@@ -323,7 +327,12 @@ h1, h2, h3, h4, h5, h6 {
 .achievement-item:before {
 	content: '';
 	position: absolute;
-	left: 4px;
+	/* item の左端は timeline の padding-left(30px) だけ内側にある。
+	   縦線（timeline 基準 left:10px・幅 2px）の中心 11px に、
+	   丸（幅 12px + 枠 3px×2 = 18px）の中心を合わせるので
+	   item 基準では 11 - 9 - 30 = -28px。
+	   4px のままだと丸だけが 29px 右へずれて、線から外れる */
+	left: -28px;
 	top: 5px;
 	width: 12px;
 	height: 12px;
@@ -379,7 +388,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .achievement-desc {
-	color: var(--accent-color);
+	color: var(--text-muted);
 	font-size: 0.9em;
 	line-height: 1.5;
 	margin-bottom: 0;
@@ -398,7 +407,7 @@ h1, h2, h3, h4, h5, h6 {
 	}
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
 	.achievement-section-title {
 		font-size: 1.2em;
 		margin-bottom: 15px;
@@ -423,7 +432,9 @@ h1, h2, h3, h4, h5, h6 {
 	}
 	
 	.achievement-item:before {
-		left: 2px;
+		/* 狭い画面では padding-left 25px・縦線 left 8px なので
+		   8 + 1 - 9 - 25 = -25px */
+		left: -25px;
 	}
 }
 
@@ -501,13 +512,6 @@ h1, h2, h3, h4, h5, h6 {
 	transform: translateY(-5px) scale(1.02);
 }
 
-/* キーボード操作時のフォーカス表示 */
-.work-link:focus-visible,
-.close-modal:focus-visible {
-	outline: 3px solid #4d90fe;
-	outline-offset: 2px;
-}
-
 /* More Worksボタンの美化 */
 #moreWorksBtn {
 	background-color: var(--primary-color);
@@ -532,15 +536,62 @@ h1, h2, h3, h4, h5, h6 {
 	transition: transform 0.3s ease;
 }
 
-/* Work hidden animation
-   display 切り替えは transition を打ち切るため、表示側だけアニメーションさせる */
+/* More Works で開閉する作品カード。
+   開くとき … 場所は即座に確保し、カードだけを順にふわっと出す。
+              高さまで伸ばすと、もたついて見える。
+   閉じるとき … 高さも一緒に縮める。縮めないと、消えた瞬間に
+              ページが一段詰まって見える。
+   overflow と max-height は閉じるあいだだけ JS が付ける
+   （常時 hidden にすると、カードを持ち上げる hover の影が切れる）。 */
 .work-hidden {
 	display: none;
+	opacity: 0;
+	transform: translateY(20px);
+	transition:
+		opacity .30s ease,
+		transform .34s cubic-bezier(.2, .7, .3, 1),
+		max-height .42s cubic-bezier(.4, 0, .2, 1);
 }
 
 .work-hidden.show {
-	display: block;
-	animation: fadeInUp 0.6s ease both;
+	opacity: 1;
+	transform: none;
+}
+
+/* 動きを減らす設定の人には即座に切り替える */
+@media (prefers-reduced-motion: reduce) {
+	.work-hidden {
+		transition: none;
+		transform: none;
+	}
+}
+
+/* Bootstrap の a:focus は点線の枠を出す（About の枠は <a> が広いので特に目立つ）。
+   マウスでのクリックでは出さず、キーボード操作のときだけ分かるようにする。
+   :focus-visible を解さないブラウザでは既定の枠を残す。 */
+@supports selector(:focus-visible) {
+
+	a:focus,
+	button:focus {
+		outline: none;
+	}
+}
+
+a:focus-visible,
+button:focus-visible,
+.work-link:focus-visible,
+.close-modal:focus-visible {
+	outline: 3px solid #4d90fe;
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+
+/* style.css に .btn:focus { outline: inherit !important } があり、
+   上のリングを打ち消してしまう。More Works ボタンにキーボードで
+   たどり着いたことが分からなくなるので、こちらも !important で上書きする。 */
+.btn:focus-visible {
+	outline: 3px solid #4d90fe !important;
+	outline-offset: 3px;
 }
 
 /* 返回顶部按钮 */
@@ -700,7 +751,7 @@ body.modal-open {
 }
 
 /* レスポンシブ改善 */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
 	.grid figure {
 		margin-bottom: 20px;
 	}
@@ -861,7 +912,7 @@ body.loading {
 .career-detail {
 	font-size: 12.5px;
 	line-height: 1.5;
-	color: var(--accent-color);
+	color: var(--text-muted);
 }
 
 .career-now {
@@ -877,7 +928,7 @@ body.loading {
 }
 
 /* ---- 狭い画面では縦並びに切り替える ---- */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
 	.career-track {
 		display: block;
 		padding-top: 0;
@@ -917,5 +968,230 @@ body.loading {
 
 	.career-period {
 		margin-bottom: 3px;
+	}
+}
+
+/* ------------------------------------------------------------------
+ * テンプレート由来の style.css を上書きして直す箇所
+ * ------------------------------------------------------------------ */
+
+/* 首屏の高さ。
+   style.css には .screen-height の高さ指定が無く、custom.js が
+   実行されて初めて画面の高さになる。それまで中身は絶対配置なので
+   セクションの高さがほぼ 0 になり、読み込み直後にページが一段跳ねる。
+   CSS で先に確保しておき、JS はあくまで微調整に留める。 */
+.screen-height {
+	min-height: 100vh;
+}
+
+/* 作品カードの画像。
+   img には width / height 属性を入れてあるが、style.css 側に
+   height: auto が無いため、幅が縮んでも高さが属性値のまま残り、
+   画面幅によっては縦に引き伸ばされる。 */
+.grid figure img {
+	height: auto;
+}
+
+/* フッターのソーシャルアイコン。
+   既定は rgba(255,255,255,.2) で、#222 の背景に対して対比 1.91。
+   唯一の連絡導線がほとんど見えないので AA を満たす濃さまで上げる
+   （.55 で 5.80）。ホバー時はさらにはっきりさせる。 */
+.social-links a {
+	color: rgba(255, 255, 255, .55);
+	border-color: rgba(255, 255, 255, .25);
+	transition: color .2s ease, border-color .2s ease;
+}
+
+.social-links a:hover,
+.social-links a:focus-visible {
+	color: #fff;
+	border-color: rgba(255, 255, 255, .7);
+}
+
+/* Skills のプログレスバー。
+   style.css の #4caf50 は白地に対して 2.46 と薄く、
+   値を色だけで伝えている部分が読み取りにくい。 */
+.progress {
+	background-color: #e4e4e4;
+}
+
+/* 作品の詳細はページ内に書き出してあり（検索エンジンに読ませるため）、
+   画面上はモーダルを開いたときだけ複製して見せる。
+   display:none ではなく視覚的に隠す手法にすると、隠した iframe の
+   読み込みが走ってしまうので、ここは display:none でよい。 */
+.work-details {
+	display: none;
+}
+
+/* モーダル内に複製されたときは通常表示に戻す */
+.work-modal .work-detail,
+.work-modal .work-description,
+.work-modal .work-keywords,
+.work-modal .work-media {
+	display: block;
+}
+
+.work-link-row {
+	margin-bottom: 20px;
+}
+
+/* ------------------------------------------------------------------
+ * キーボード・タッチでも届くようにする調整
+ * ------------------------------------------------------------------ */
+
+/* スキルと言語の詳細は :hover でしか出ず、キーボードやタップでは
+   読めなかった。tabindex を付けた枠にフォーカスが来たときも開く。 */
+.skill-item:focus .details,
+.skill-item:focus-within .details {
+	display: block;
+	top: 60%;
+	width: 150%;
+	left: -25%;
+}
+
+.lanskill-item:focus .details,
+.lanskill-item:focus-within .details {
+	display: block;
+	top: 70%;
+	bottom: auto;
+	left: 5%;
+	width: 90%;
+}
+
+.skill-item:focus-visible,
+.lanskill-item:focus-visible {
+	outline: 3px solid #4d90fe;
+	outline-offset: -3px;
+	border-radius: 8px;
+}
+
+/* 作品カードのリンクは中身が絶対配置なので、a 自体の箱が潰れて
+   フォーカスの枠が見えない。カード（figure）側に枠を出す。 */
+.grid figure:has(.work-link:focus-visible) {
+	outline: 3px solid #4d90fe;
+	outline-offset: 3px;
+}
+
+/* 詳細の吹き出しが狭い画面で左右にはみ出し、body の overflow-x:hidden で
+   切れていた。画面幅に収まる範囲に抑える。 */
+@media (max-width: 767px) {
+
+	.skill-item:hover .details,
+	.skill-item:focus .details,
+	.skill-item:focus-within .details {
+		width: 100%;
+		left: 0;
+	}
+}
+
+/* 動きを減らす設定のときは、無限に動き続けるものも止める。
+   これまで .work-hidden の切り替えだけしか見ていなかった。 */
+@media (prefers-reduced-motion: reduce) {
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: .01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: .01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* 作品カードの見出しは h2 → h3 にした（セクション見出しと同レベルに
+   12 個並ぶのを避けるため）。style.css 側は h2 前提の指定なので、
+   同じ見え方になるよう h3 にも当てる。 */
+.grid figure h3 {
+	font-size: 20px;
+	margin: 0;
+	text-transform: none;
+	letter-spacing: 0;
+	color: inherit;
+}
+
+.grid figure h3 span {
+	font-weight: 800;
+}
+
+figure.effect-bubba h3 {
+	/* style.css の figure.effect-bubba h2 と同じ値にそろえる */
+	padding-top: 10%;
+	transition: transform 0.35s;
+	transform: translate3d(0, -20px, 0);
+	color: #fff;
+}
+
+/* style.css の hover 指定は `:hover h2, :hover p` という組の形なので
+   h3 には当たらない。opacity も含めてここで補う */
+figure.effect-bubba:hover h3 {
+	opacity: 1;
+	transform: translate3d(0, 0, 0);
+}
+
+.effect-bubba figcaption h3 {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial,
+		'Hiragino Kaku Gothic ProN', 'Yu Gothic Medium', sans-serif;
+	font-size: 1.5em;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+
+/* ------------------------------------------------------------------
+ * 監査で見つかった細かい取りこぼし
+ * ------------------------------------------------------------------ */
+
+/* 消えたあともスピナーが回り続けていた。
+   opacity:0 だけでは要素が生きているのでアニメーションも止まらない。 */
+.loader-wrapper.fade-out {
+	visibility: hidden;
+}
+
+/* モーダルの閉じるボタン。#aaa は白地に 2.32 で、
+   Esc に気付かない人にとっての主要な離脱手段としては薄すぎる。 */
+.close-modal {
+	color: #666;
+}
+
+/* ハンバーガーとナビ項目のフォーカス表示。
+   bootstrap の .navbar-toggle:focus{outline:0} が
+   button:focus-visible より詳細度が高くて勝ってしまうため、
+   ここで上書きする。ナビは overflow で枠が切れるので内側に出す。 */
+.navbar-toggle:focus-visible {
+	outline: 3px solid #4d90fe;
+	outline-offset: -2px;
+}
+
+.navbar-custom .nav li a:focus-visible {
+	box-shadow: inset 0 0 0 3px #4d90fe;
+	border-radius: 3px;
+}
+
+/* モーダル内で端まで来たとき、背景のページが動かないようにする。 */
+.work-modal-content {
+	overscroll-behavior: contain;
+}
+
+/* スキルの詳細は col-sm-4（約 250px）になる 768px 以上でも
+   width:150% / left:-25% のままで画面外へはみ出していた。
+   横スクロールできない（body に overflow-x:hidden）ので切れて読めない。 */
+@media (min-width: 768px) and (max-width: 991px) {
+
+	.skill-item:hover .details,
+	.skill-item:focus .details,
+	.skill-item:focus-within .details {
+		width: 200%;
+		left: -50%;
+	}
+
+	.col-xs-6.skill-item:nth-child(3n+1):hover .details,
+	.col-xs-6.skill-item:nth-child(3n+1):focus-within .details {
+		left: 0;
+	}
+
+	.col-xs-6.skill-item:nth-child(3n):hover .details,
+	.col-xs-6.skill-item:nth-child(3n):focus-within .details {
+		left: -100%;
 	}
 }

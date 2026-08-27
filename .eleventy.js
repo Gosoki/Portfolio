@@ -48,6 +48,32 @@ module.exports = function (eleventyConfig) {
 			}))
 	);
 
+	// <script> の中へ値を埋めるための JSON 化。
+	// nunjucks 標準の dump には次の穴があり、そのまま使うとページが壊れる:
+	//   1) undefined を空文字にするので `keywords: ,` のような構文エラーになる
+	//      （任意項目を空にして保存するとキーごと消えるため、実際に起きる）
+	//   2) </script> をエスケープしないので、文字列の中身で script が閉じてしまう
+	//   3) U+2028 / U+2029 は JS では行終端子として扱われ、構文エラーになる
+	eleventyConfig.addFilter("jsonSafe", function (value, fallback) {
+		const v = value === undefined || value === null
+			? (fallback === undefined ? null : fallback)
+			: value;
+		return JSON.stringify(v)
+			.replace(/</g, "\\u003c")
+			.replace(/>/g, "\\u003e")
+			.replace(/\u2028/g, "\\u2028")
+			.replace(/\u2029/g, "\\u2029");
+	});
+
+	// 別タブで開くべきリンクか。
+	// url が無い項目でもビルドが落ちないよう、ここで型ごと吸収する
+	eleventyConfig.addFilter("isExternalLink", function (url) {
+		if (typeof url !== "string" || !url) return false;
+		if (url.startsWith("mailto:") || url.startsWith("tel:")) return false;
+		if (url.startsWith("#") || url.startsWith("/")) return false;
+		return true;
+	});
+
 	// sitemap.xml の lastmod 用
 	eleventyConfig.addGlobalData("buildDate", () => new Date().toISOString().slice(0, 10));
 
@@ -56,34 +82,58 @@ module.exports = function (eleventyConfig) {
 	// 埋め込み定義（{type, id} など）から iframe の HTML を組み立てる。
 	// 作品を追加するときに frameborder や allowfullscreen を書かなくて済むよう、
 	// 属性はここで一括して面倒を見る。
+	// HTML の属性値へ安全に入れるためのエスケープ
+	const attr = (v) =>
+		String(v == null ? "" : v)
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;");
+
+	// 埋め込みを組み立てる。
+	// src ではなく data-src に入れておき、モーダルを開いた時点で JS が差し込む。
+	// こうしないと、隠してあるだけの 12 作品ぶんの iframe を
+	// ページを開いた瞬間に全部読みに行ってしまう。
 	eleventyConfig.addFilter("embedHtml", function (media, workTitle) {
 		return (media || [])
 			.map((item, index) => {
-				const title = `${workTitle}（資料 ${index + 1}）`;
+				const where = `works.json の「${workTitle}」の ${index + 1} 番目の埋め込み`;
+
+				// 値が欠けたまま通すと .../file/d//preview のような
+				// 壊れた埋め込みが黙って本番に出る。ここで止める
+				if (item.type === "link") {
+					if (!item.url) throw new Error(`${where}: link には url が要ります`);
+					if (!item.label) throw new Error(`${where}: link には label が要ります`);
+				} else if (!item.id) {
+					throw new Error(`${where}: ${item.type} には id が要ります`);
+				}
+
+				const title = attr(`${workTitle}（資料 ${index + 1}）`);
 				const height = item.height || DEFAULT_HEIGHT[item.type];
+				const id = attr(item.id);
 
 				switch (item.type) {
 					case "link":
 						return (
-							`<div style="margin-bottom: 20px;"><b>${item.label}:</b> ` +
-							`<a href="${item.url}" target="_blank" rel="noopener noreferrer">` +
-							`${item.text || item.url}</a></div>`
+							`<div class="work-link-row"><b>${attr(item.label)}:</b> ` +
+							`<a href="${attr(item.url)}" target="_blank" rel="noopener noreferrer">` +
+							`${attr(item.text || item.url)}</a></div>`
 						);
 					case "drive":
 						return (
-							`<iframe src="https://drive.google.com/file/d/${item.id}/preview" ` +
-							`height="${height}" allow="autoplay" allowfullscreen title="${title}"></iframe>`
+							`<iframe data-src="https://drive.google.com/file/d/${id}/preview" ` +
+							`height="${height}" allow="autoplay" allowfullscreen loading="lazy" title="${title}"></iframe>`
 						);
 					case "slides":
 						return (
-							`<iframe src="https://docs.google.com/presentation/d/e/${item.id}` +
-							`/embed?start=false&loop=false&delayms=3000" ` +
-							`height="${height}" allowfullscreen title="${title}"></iframe>`
+							`<iframe data-src="https://docs.google.com/presentation/d/e/${id}` +
+							`/embed?start=false&amp;loop=false&amp;delayms=3000" ` +
+							`height="${height}" allowfullscreen loading="lazy" title="${title}"></iframe>`
 						);
 					case "doc":
 						return (
-							`<iframe src="https://docs.google.com/document/d/e/${item.id}/pub?embedded=true" ` +
-							`height="${height}" title="${title}"></iframe>`
+							`<iframe data-src="https://docs.google.com/document/d/e/${id}/pub?embedded=true" ` +
+							`height="${height}" loading="lazy" title="${title}"></iframe>`
 						);
 					default:
 						throw new Error(

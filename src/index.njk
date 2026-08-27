@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ site.lang }}" class="no-js">
+<html lang="{{ site.lang }}">
 
 <head>
 	<meta charset="UTF-8" />
@@ -24,8 +24,6 @@
 	<meta property="og:locale" content="ja_JP" />
 	<meta name="twitter:card" content="summary" />
 
-	<link rel="preconnect" href="https://ae01.alicdn.com" crossorigin />
-
 	{#- 構造化データ。検索エンジンに「呉 祖熙 = このページの人物」を伝える。
 	    表記ゆれ（呉祖熙 / Wu Zuxi / Go Soki / ゴソキ …）は alternateName に列挙してあり、
 	    所属とスキルは career.json / skills.json から自動生成される #}
@@ -36,26 +34,26 @@
 			{
 				"@type": "Person",
 				"@id": "{{ site.url }}/#person",
-				"name": {{ site.person.name | dump | safe }},
-				"alternateName": {{ site.person.alternateName | dump | safe }},
-				"familyName": {{ site.person.familyName | dump | safe }},
-				"givenName": {{ site.person.givenName | dump | safe }},
-				"jobTitle": {{ site.person.jobTitle | dump | safe }},
-				"description": {{ site.shortDescription | dump | safe }},
+				"name": {{ site.person.name | jsonSafe | safe }},
+				"alternateName": {{ site.person.alternateName | jsonSafe | safe }},
+				"familyName": {{ site.person.familyName | jsonSafe | safe }},
+				"givenName": {{ site.person.givenName | jsonSafe | safe }},
+				"jobTitle": {{ site.person.jobTitle | jsonSafe | safe }},
+				"description": {{ site.shortDescription | jsonSafe | safe }},
 				"url": "{{ site.url }}/",
 				"image": "{{ site.url }}/{{ site.ogImage }}",
-				"affiliation": {{ career | orgList(true) | dump | safe }},
-				"alumniOf": {{ career | orgList(false) | dump | safe }},
-				"knowsAbout": {{ skills | skillNames(60) | dump | safe }},
-				"knowsLanguage": {{ site.person.knowsLanguage | dump | safe }},
-				"sameAs": {{ site.person.sameAs | dump | safe }}
+				"affiliation": {{ career | orgList(true) | jsonSafe | safe }},
+				"alumniOf": {{ career | orgList(false) | jsonSafe | safe }},
+				"knowsAbout": {{ skills | skillNames(60) | jsonSafe | safe }},
+				"knowsLanguage": {{ site.person.knowsLanguage | jsonSafe | safe }},
+				"sameAs": {{ site.person.sameAs | jsonSafe | safe }}
 			},
 			{
 				"@type": "WebSite",
 				"@id": "{{ site.url }}/#website",
 				"url": "{{ site.url }}/",
-				"name": {{ site.siteName | dump | safe }},
-				"description": {{ site.description | dump | safe }},
+				"name": {{ site.siteName | jsonSafe | safe }},
+				"description": {{ site.description | jsonSafe | safe }},
 				"inLanguage": "{{ site.lang }}",
 				"about": { "@id": "{{ site.url }}/#person" },
 				"publisher": { "@id": "{{ site.url }}/#person" }
@@ -64,7 +62,7 @@
 				"@type": "ProfilePage",
 				"@id": "{{ site.url }}/#webpage",
 				"url": "{{ site.url }}/",
-				"name": {{ site.title | dump | safe }},
+				"name": {{ site.title | jsonSafe | safe }},
 				"isPartOf": { "@id": "{{ site.url }}/#website" },
 				"mainEntity": { "@id": "{{ site.url }}/#person" },
 				"inLanguage": "{{ site.lang }}"
@@ -81,11 +79,9 @@
 	<link href="assets/css/custom.css" rel="stylesheet" />
 	<script>
 		/* JS が有効なときだけ .js-enabled を付ける。
-		   無効なら .wow の visibility:hidden が当たらず、本文がそのまま見える。
-		   no-js / js クラスは Modernizr が管理するので触らない */
+		   無効なら .wow の visibility:hidden が当たらず、本文がそのまま見える */
 		document.documentElement.className += ' js-enabled';
 	</script>
-	<script src="assets/js/modernizr.custom.js"></script>
 </head>
 
 <body class="loading">
@@ -131,7 +127,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="index.html" style="font-family: sans-serif">{{ site.brand }}</a>
+					<a class="navbar-brand" href="/" style="font-family: sans-serif">{{ site.brand }}</a>
 				</div>
 
 				<div class="collapse navbar-collapse" id="custom-collapse">
@@ -147,9 +143,10 @@
 
 	<!-- Navigation end -->
 
+	<main>
 	<!-- about start -->
 
-	<section id="about" class="pfblock pfblock-gray content-loading">
+	<section id="about" class="pfblock pfblock-gray">
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-6 col-sm-offset-3">
@@ -167,6 +164,9 @@
 				{%- for box in about %}
 				<div class="col-xs-12 col-sm-6 col-md-3">
 					<div class="iconbox wow {% if loop.index0 < (about | length / 2) %}slideInLeft{% else %}slideInRight{% endif %}">
+						{#- リンク先が空のときは <a> にしない。
+						    href="" は「同じページを開き直すリンク」になってしまう #}
+						{%- if box.url %}
 						<a href="{{ box.url }}"{% if box.external %} target="_blank" rel="noopener noreferrer"{% endif %}>
 							<div class="iconbox-icon">
 								<span class="{{ box.icon }}"></span>
@@ -175,6 +175,14 @@
 								<h3 class="iconbox-title">{{ box.title }}</h3>
 							</div>
 						</a>
+						{%- else %}
+						<div class="iconbox-icon">
+							<span class="{{ box.icon }}"></span>
+						</div>
+						<div class="iconbox-text">
+							<h3 class="iconbox-title">{{ box.title }}</h3>
+						</div>
+						{%- endif %}
 						<div class="iconbox-desc">{{ box.desc | safe }}</div>
 					</div>
 				</div>
@@ -185,7 +193,7 @@
 	<!-- about end -->
 
 	<!-- Career start -->
-	<section id="career" class="pfblock content-loading">
+	<section id="career" class="pfblock">
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-6 col-sm-offset-3">
@@ -224,7 +232,7 @@
 	<!-- Career end -->
 
 	<!-- Skills start -->
-	<section class="pfblock content-loading" id="skills">
+	<section class="pfblock" id="skills">
 		<div class="container">
 
 			<div class="row">
@@ -238,10 +246,14 @@
 			</div>
 			<div class="row skills ">
 				{%- for skill in skills %}
-				<div class="col-xs-6 col-sm-4 col-md-2 text-center skill-item">
+				{#- tabindex を付けて、キーボードやタップでも詳細（.details）に届くようにする。
+				    バーは幅だけで値を表していたので、読み上げ用に role と値を持たせ、
+				    JS が動かない場合でも幅が出るよう style で初期値を入れておく #}
+				<div class="col-xs-6 col-sm-4 col-md-2 text-center skill-item" tabindex="0">
 					<b>{{ skill.name }}{% if loop.first %} <span class="skill-hint-dot" id="skillHintDot"></span>{% endif %}</b>
-					<div class="progress">
-						<div class="progress-bar" data-percent="{{ skill.percent }}"></div>
+					<div class="progress" role="progressbar" aria-label="{{ skill.name }}"
+						aria-valuenow="{{ skill.percent }}" aria-valuemin="0" aria-valuemax="100">
+						<div class="progress-bar" data-percent="{{ skill.percent }}" style="width: {{ skill.percent }}%"></div>
 					</div>
 					<div class="details">{{ skill.detail | safe }}</div>
 				</div>
@@ -254,9 +266,11 @@
 					<div class="pfblock-subtitle text-center">{{ site.sections.languages | safe }}</div>
 				</div>
 
+				{#- 円グラフの塗りは既定で「習熟度」と同じ。
+				    見た目だけ調整したいときは chart に別の値を入れると、そちらが優先される #}
 				{%- for lang in languages %}
-				<div class="col-xs-6 col-sm-6 col-md-3 text-center lanskill-item">
-					<div data-percent="{{ lang.percent }}" class="chart easyPieChart">
+				<div class="col-xs-6 col-sm-6 col-md-3 text-center lanskill-item" tabindex="0">
+					<div data-percent="{{ lang.chart | default(lang.percent) }}" class="chart easyPieChart">
 						<div class="chart-label">
 							<h3>{{ lang.name }}</h3>
 							<span class="percent">{{ lang.percent }}</span>
@@ -272,7 +286,7 @@
 	<!-- Skills end -->
 
 	<!-- Achievements start -->
-	<section id="achievements" class="pfblock pfblock-gray content-loading">
+	<section id="achievements" class="pfblock pfblock-gray">
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-6 col-sm-offset-3">
@@ -313,7 +327,7 @@
 	<!-- Achievements end -->
 
 	<!-- Works start -->
-	<section id="works" class="pfblock content-loading">
+	<section id="works" class="pfblock">
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-6 col-sm-offset-3">
@@ -335,15 +349,17 @@
 					<div class="grid wow zoomIn">
 						<figure class="effect-bubba">
 							{%- for image in work.images %}
+							{#- 幅・高さは分かるときだけ出す。空文字を入れると無効な属性になる #}
 							<img{% if work.images | length > 1 %} class="mySlides"{% endif %} src="{{ image.src }}"
-								alt="{{ image.alt }}" width="{{ image.width }}" height="{{ image.height }}"
+								alt="{{ image.alt }}"{% if image.width %} width="{{ image.width }}"{% endif %}{% if image.height %} height="{{ image.height }}"{% endif %}
 								loading="lazy" decoding="async" />
 							{%- endfor %}
 							<a role="button" tabindex="0" class="work-link" data-work="{{ work.id }}">
 								<figcaption>
-									<h2>
+									{#- セクション見出しが h2 なので、カードは h3 にする #}
+									<h3>
 										<span>{{ work.card.title }}</span>
-									</h2>
+									</h3>
 									<p>{{ work.card.text | safe }}</p>
 								</figcaption>
 							</a>
@@ -365,7 +381,26 @@
 		</div>
 	</section>
 	<!-- Works end -->
+	</main>
 
+
+	{#- 作品の詳細。CSS で隠してあるが HTML には存在するので検索エンジンからも読める。
+	    モーダルを開くときはここから複製する。
+	    iframe は data-src にしてあり、開くまで読み込まれない #}
+	<div id="workDetails" class="work-details">
+		{%- for work in works %}
+		<article id="detail-{{ work.id }}" class="work-detail">
+			<h3 class="work-detail-title">{{ work.title }}</h3>
+			{%- if work.keywords %}
+			<p class="work-keywords"><b>Keywords: </b>
+				{%- for kw in work.keywords %}<span class="label label-success">{{ kw }}</span>{% endfor %}
+			</p>
+			{%- endif %}
+			<p class="work-description">{{ work.description }}</p>
+			<div class="work-media">{{ work.media | embedHtml(work.title) | safe }}</div>
+		</article>
+		{%- endfor %}
+	</div>
 
 	<!-- Work Modal -->
 	<div id="workModal" class="work-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
@@ -384,8 +419,8 @@
 
 
 	<!-- Footer start -->
-	<section id="contact" class="pfblock pfblock-gray content-loading" style="padding-top: 0; padding-bottom: 0"></section>
-	<footer id="footer" class="content-loading">
+	<section id="contact" class="pfblock pfblock-gray" style="padding-top: 0; padding-bottom: 0"></section>
+	<footer id="footer">
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-12">
@@ -396,7 +431,7 @@
 					<ul class="social-links">
 						{%- for link in social %}
 						<li>
-							<a href="{{ link.url }}"{% if not link.url.startsWith("mailto:") %} target="_blank" rel="noopener noreferrer"{% endif %}
+							<a href="{{ link.url | default('#') }}"{% if link.url | isExternalLink %} target="_blank" rel="noopener noreferrer"{% endif %}
 								aria-label="{{ link.label }}" class="wow fadeInUp"{% if not loop.first %} data-wow-delay="{{ (loop.index0 * 0.2) | round(1) }}s"{% endif %}><i
 									class="fa {{ link.icon }}" aria-hidden="true"></i></a>
 						</li>
@@ -425,17 +460,6 @@
 	<script src="assets/js/jquery.easypiechart.js"></script>
 	<script src="assets/js/custom.js"></script>
 	<script>
-		// 作品データ（_data/works.json から自動生成。ここは直接編集しない）
-		const worksData = {
-			{%- for work in works %}
-			{{ work.id }}: {
-				title: {{ work.title | dump | safe }},
-				keywords: {{ work.keywords | dump | safe }},
-				description: {{ work.description | dump | safe }},
-				media: {{ work.media | embedHtml(work.title) | dump | safe }}
-			}{{ "," if not loop.last }}
-			{%- endfor %}
-		};
 
 		// ---------------------------------------------------------------
 		// UI ロジック
@@ -473,6 +497,11 @@
 
 					var percent = $bar.data('percent');
 
+					// テンプレート側で最終的な幅を入れてあるので、
+					// 一度 0 に戻してから伸ばす（JS 無効時は入れたままの幅が出る）
+					$bar.css({ 'width': 0, 'transition': 'none' });
+					$bar[0].offsetWidth;
+
 					setTimeout(function () {
 						$bar.css({
 							'width': percent + '%',
@@ -508,6 +537,24 @@
 					return;
 				}
 				languageSkillsRevealed = true;
+
+				// 輪を描き始めるのは、要素が見えるようになるこの瞬間。
+				// ページ読み込み時に初期化すると、まだ opacity:0 のあいだに
+				// 2 秒の描画アニメが終わってしまい、動きが誰にも見えない
+				if ($.fn.easyPieChart) {
+					$items.find('.chart.easyPieChart').easyPieChart({
+						// 色と太さは Skills のプログレスバー
+						// （.progress-bar #4caf50 / .progress #f1f1f1 / 高さ 14px）に合わせる。
+						// size は .chart の CSS 幅 140px と一致させること。
+						// ここが 150 だと canvas がはみ出し、中央の数字も 5px ずれる
+						barColor: '#4caf50',
+						trackColor: '#f1f1f1',
+						scaleColor: false,
+						lineWidth: 10,
+						size: 140,
+						animate: 2000
+					});
+				}
 
 				$items.each(function (index) {
 					var $item = $(this);
@@ -563,18 +610,10 @@
 			var $modalBody = $('#modalBody');
 			var lastFocusedElement = null;
 
-			var HTML_ESCAPE = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-
-			function escapeHtml(value) {
-				return String(value).replace(/[&<>"']/g, function (char) {
-					return HTML_ESCAPE[char];
-				});
-			}
-
 			function openModal(workId) {
-				var work = worksData[workId];
+				var $source = $('#detail-' + workId);
 
-				if (!work) {
+				if (!$source.length) {
 					return;
 				}
 
@@ -585,27 +624,24 @@
 
 				lastFocusedElement = document.activeElement;
 
-				var keywords = $.map(work.keywords, function (keyword) {
-					return '<span class="label label-success">' + escapeHtml(keyword) + '</span>';
-				}).join('');
+				// ページ内に書いてある詳細をそのまま複製して使う。
+				// 見出しはモーダル上部に出すので、複製した側からは省く
+				var $content = $source.clone();
+				var title = $content.find('.work-detail-title').text();
+				$content.find('.work-detail-title').remove();
 
-				$modalTitle.text(work.title);
-				$modalBody.html(
-					'<div class="work-keywords"><b>Keywords: </b>' + keywords + '</div>' +
-					'<div class="work-description">' + escapeHtml(work.description) + '</div>' +
-					'<div class="work-media">' + work.media + '</div>'
-				);
+				$modalTitle.text(title);
+				$modalBody.empty().append($content.contents());
+
+				// ここで初めて埋め込みを読みに行かせる
+				$modalBody.find('iframe[data-src]').each(function () {
+					this.src = this.getAttribute('data-src');
+					this.removeAttribute('data-src');
+				});
 
 				// 背景のスクロールバーが消える分の横ズレを打ち消す
 				var scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 				document.documentElement.style.setProperty('--scrollbar-width', scrollbarWidth + 'px');
-
-				// 埋め込みには title が無いため、読み上げ用に補う
-				$modalBody.find('iframe').each(function (index) {
-					if (!this.getAttribute('title')) {
-						this.setAttribute('title', work.title + '（資料 ' + (index + 1) + '）');
-					}
-				});
 
 				$modal.css('display', 'flex').attr('aria-hidden', 'false');
 				$('body').addClass('modal-open');
@@ -633,9 +669,7 @@
 
 			// --- ローディング表示 ---------------------------------------------
 
-			var LOADER_MIN_MS = 600;
 			var LOADER_MAX_MS = 4000;
-			var loaderStartedAt = Date.now();
 			var loaderHidden = false;
 
 			function hideLoader() {
@@ -645,7 +679,6 @@
 				loaderHidden = true;
 
 				$('.loader-wrapper').addClass('fade-out');
-				$('.content-loading').addClass('loaded');
 				$('body').removeClass('loading');
 
 				// スクロールしなくても初期表示分のアニメーションが動くよう一度判定する
@@ -662,21 +695,6 @@
 					new WOW().init();
 				} else {
 					$('.wow').css('visibility', 'visible');
-				}
-
-				if ($.fn.easyPieChart) {
-					$('.chart.easyPieChart').easyPieChart({
-						// 色と太さは Skills のプログレスバー
-						// （.progress-bar #4caf50 / .progress #f1f1f1 / 高さ 14px）に合わせる。
-						// size は .chart の CSS 幅 140px と一致させること。
-						// ここが 150 だと canvas がはみ出し、中央の数字も 5px ずれる
-						barColor: '#4caf50',
-						trackColor: '#f1f1f1',
-						scaleColor: false,
-						lineWidth: 10,
-						size: 140,
-						animate: 2000
-					});
 				}
 
 				$('#copyrightYear').text(new Date().getFullYear());
@@ -705,7 +723,19 @@
 					}
 					event.preventDefault();
 
-					var headerHeight = $('.header').outerHeight() || 0;
+					// 狭い画面で開いたままのメニューを閉じる。
+					// 閉じないと画面の 3〜4 割をメニューが占め続ける
+					var $menu = $('#custom-collapse');
+					var menuWasOpen = $menu.hasClass('in');
+					if (menuWasOpen) {
+						$menu.collapse('hide');
+					}
+
+					// 閉じるアニメーションの最中はまだ開いた高さなので、
+					// 開いていた場合は閉じたあとの高さ（navbar-header）で測る
+					var headerHeight = menuWasOpen
+						? ($('.navbar-header').outerHeight() || 50)
+						: ($('.header').outerHeight() || 0);
 
 					$('html, body').stop().animate({
 						scrollTop: Math.max(0, target.offset().top - headerHeight)
@@ -766,42 +796,109 @@
 				});
 
 				// More Works
+				// 閉じ切るまでの待ち時間。custom.css の transition で
+				// 一番長い max-height .42s より少し長めにしておく
+				var CARD_OUT = 460;
+
+				// 折りたたむ作品が 1 件も無ければ、ボタン自体を出さない。
+				// 出したままだと押した瞬間に空集合を触って例外になる
+				if (!$('.work-hidden').length) {
+					$('#moreWorksBtn').closest('.row').hide();
+				}
+				var worksTimer = null;
+
 				$('#moreWorksBtn').on('click', function () {
 					var $button = $(this);
 					var $hidden = $('.work-hidden');
+					if (!$hidden.length) {
+						return;
+					}
 					var expanded = !$hidden.first().hasClass('show');
 
-					$hidden.toggleClass('show', expanded);
+					clearTimeout(worksTimer);
+
 					$button.attr('aria-expanded', expanded ? 'true' : 'false');
 					$button.find('.btn-text').text(expanded ? 'Show Less' : 'More Works');
 					$button.find('i')
 						.toggleClass('fa-angle-down', !expanded)
 						.toggleClass('fa-angle-up', expanded);
+
+					if (expanded) {
+						// 場所は即座に確保し、3 枚そろって出す（時間差は付けない）。
+						// 閉じかけの指定が残っていることがあるので消しておく
+						$hidden.each(function () {
+							this.style.display = 'block';
+							this.style.maxHeight = '';
+							this.style.overflow = '';
+							this.style.transitionDelay = '';
+						});
+						// 表示を一度反映させないと transition が始まらない
+						$hidden[0].offsetHeight;
+						$hidden.addClass('show');
+						return;
+					}
+
+					// 3 枚そろって閉じる。
+					// いまの高さを一度固定してから 0 へ縮めないと、高さが動かない
+					$hidden.each(function () {
+						this.style.overflow = 'hidden';
+						this.style.maxHeight = this.scrollHeight + 'px';
+						this.style.transitionDelay = '';
+					});
+					$hidden[0].offsetHeight;
+
+					$hidden.removeClass('show');
+					$hidden.each(function () {
+						this.style.maxHeight = '0px';
+					});
+
+					worksTimer = setTimeout(function () {
+						$hidden.each(function () {
+							this.style.display = '';
+							this.style.maxHeight = '';
+							this.style.overflow = '';
+							this.style.transitionDelay = '';
+						});
+
+						// 畳んだ拍子にボタンが画面の外へ出ていたら、そこまで戻す
+						var rect = $button[0].getBoundingClientRect();
+						if (rect.top < 0 || rect.bottom > window.innerHeight) {
+							$('html, body').stop().animate({
+								scrollTop: Math.max(0, $button.offset().top - 140)
+							}, 380, 'swing');
+						}
+					}, CARD_OUT);
 				});
 
-				// 強化学習カードの 2 枚を切り替えるスライドショー
-				var $slides = $('.mySlides');
+				// 画像を複数持つ作品カードの切り替え。
+				// カードごとに独立させること。ページ全体を 1 本の配列として扱うと、
+				// 2 枚持ちの作品が 2 つ以上になったとき互いの画像を消し合う
+				$('.grid figure').each(function () {
+					var $slides = $(this).find('.mySlides');
+					if ($slides.length < 2) {
+						return;
+					}
 
-				if ($slides.length > 1) {
-					var slideIndex = 0;
-
+					var index = 0;
 					$slides.hide().eq(0).show();
 
 					setInterval(function () {
-						$slides.eq(slideIndex).hide();
-						slideIndex = (slideIndex + 1) % $slides.length;
-						$slides.eq(slideIndex).show();
+						$slides.eq(index).hide();
+						index = (index + 1) % $slides.length;
+						$slides.eq(index).show();
 					}, 5000);
-				}
+				});
 			});
 
 			// リソースの読み込み完了でローディングを消す。
 			// load が来ない場合も body.loading の overflow:hidden で
 			// 操作不能にならないよう、上限時間で必ず解除する。
-			$(window).on('load', function () {
-				var elapsed = Date.now() - loaderStartedAt;
-				setTimeout(hideLoader, Math.max(0, LOADER_MIN_MS - elapsed));
-			});
+			// 本文は最初から読める状態なので、画像の読み込み完了まで
+			// 操作を止める必要はない。DOM が組み上がった時点で解除する。
+			$(document).ready(hideLoader);
+
+			// 念のため load でも呼ぶ（ready より前に来ることはない）
+			$(window).on('load', hideLoader);
 
 			setTimeout(hideLoader, LOADER_MAX_MS);
 

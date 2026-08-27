@@ -110,13 +110,15 @@
 			flex: none;
 			display: flex;
 			align-items: center;
-			gap: 6px;
-			padding: 10px 14px;
+			gap: 7px;
+			/* 下の 2px は選択中の線。その分だけ下 padding を引いて中身を上下中央に置く */
+			padding: 10px 14px 8px;
 			border: 0;
 			border-bottom: 2px solid transparent;
 			background: transparent;
 			cursor: pointer;
 			font-size: 13px;
+			line-height: 1.4;
 			white-space: nowrap;
 			color: var(--muted);
 		}
@@ -129,20 +131,30 @@
 			font-weight: 700;
 		}
 
-		/* 件数は小さなバッジとして横に置く */
+		/* 件数のバッジ。桁数が変わっても形が崩れないよう、
+		   高さを固定し、最小幅を持たせて中央に数字を置く */
 		#tabs button .n {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			box-sizing: border-box;
+			min-width: 20px;
+			height: 18px;
+			padding: 0 5px;
 			font-size: 11px;
 			font-weight: 600;
-			padding: 1px 6px;
+			line-height: 1;
+			font-variant-numeric: tabular-nums;
 			border-radius: 999px;
 			background: var(--bg);
 			border: 1px solid var(--line);
-			opacity: .85;
+			color: var(--muted);
 		}
 
 		#tabs button.on .n {
 			background: var(--accent-soft);
 			border-color: var(--accent);
+			color: var(--accent);
 		}
 
 		/* 用途のちがうタブのあいだに入れる区切り */
@@ -194,6 +206,34 @@
 
 		.row:hover { background: var(--bg); }
 
+		/* 並べ替え中の見た目 */
+		.row.dragging {
+			opacity: .35;
+		}
+
+		.row.drop-before {
+			box-shadow: inset 0 2px 0 var(--accent);
+		}
+
+		.row.drop-after {
+			box-shadow: inset 0 -2px 0 var(--accent);
+		}
+
+		/* つまむ場所。ここを持って動かす */
+		.row .grip {
+			flex: none;
+			width: 12px;
+			text-align: center;
+			color: var(--line);
+			cursor: grab;
+			user-select: none;
+			line-height: 1;
+			font-size: 13px;
+		}
+
+		.row:hover .grip { color: var(--muted); }
+		.row .grip:active { cursor: grabbing; }
+
 		.row.on {
 			background: var(--accent-soft);
 			border-color: var(--accent);
@@ -217,9 +257,28 @@
 			display: flex;
 			gap: 2px;
 			opacity: 0;
+			/* 透明なだけだと、行を選ぶつもりのタップで順序が動いてしまう */
+			pointer-events: none;
 		}
 
-		.row:hover .mv, .row.on .mv { opacity: 1; }
+		.row:hover .mv,
+		.row.on .mv {
+			opacity: 1;
+			pointer-events: auto;
+		}
+
+		/* ホバーできない端末では隠す意味がないので、常に出して押しやすくする */
+		@media (hover: none) {
+			.row .mv {
+				opacity: 1;
+				pointer-events: auto;
+			}
+
+			.mv button {
+				width: 30px;
+				height: 30px;
+			}
+		}
 
 		.mv button {
 			border: 1px solid var(--line);
@@ -251,6 +310,37 @@
 
 		/* ---------- フォーム ---------- */
 		.field { margin-bottom: 18px; max-width: 720px; }
+
+		/* 項目が多いフォームを用途ごとに囲む */
+		.group-box {
+			max-width: 720px;
+			margin: 0 0 24px;
+			padding: 18px 20px 4px;
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			background: var(--panel);
+		}
+
+		.group-box > legend {
+			padding: 0 8px;
+			margin-left: -8px;
+			font-size: 12px;
+			font-weight: 700;
+			letter-spacing: .6px;
+			color: var(--muted);
+		}
+
+		/* 文字数の目安。超えると色で知らせる */
+		.counter {
+			float: right;
+			font-size: 11.5px;
+			font-weight: 600;
+			color: var(--muted);
+			margin-top: 4px;
+		}
+
+		.counter.near { color: #b7791f; }
+		.counter.over { color: var(--danger); }
 
 		.field > label {
 			display: block;
@@ -440,6 +530,34 @@
 	<script>
 		'use strict';
 
+		// 開発サーバは、何かが再ビルドされるたびに全タブへリロードを促す。
+		// このページはテンプレートではないので差分更新の対象にならず、
+		// 保存のたびに丸ごと作り直されてしまう。
+		// 自分だけリロード用の接続を持たないようにして、編集中の状態を守る。
+		(function () {
+			const NativeWebSocket = window.WebSocket;
+			if (!NativeWebSocket) return;
+			window.WebSocket = function (url, protocols) {
+				// 開発サーバは ws://<host> へ「パス無し」で繋いでくる。
+				// パス名で見分けようとすると素通りするので、
+				// 同じホスト宛の ws 接続をリロード通知とみなして塞ぐ。
+				try {
+					const target = new URL(String(url), location.href);
+					if (target.host === location.host) {
+						// 何もしない偽物を返す。接続しないので通知も届かない
+						return {
+							readyState: 3, close() { }, send() { },
+							addEventListener() { }, removeEventListener() { },
+						};
+					}
+				} catch (e) {
+					// URL として解釈できないものは触らない
+				}
+				return new NativeWebSocket(url, protocols);
+			};
+			window.WebSocket.prototype = NativeWebSocket.prototype;
+		})();
+
 		// ==============================================================
 		// スキーマ定義
 		//   req: true  … 必須（空だと保存できない）
@@ -453,7 +571,7 @@
 				template: () => ({ id: '', featured: true, card: { title: '', text: '' }, images: [], title: '', keywords: [], description: '', media: [] }),
 				fields: [
 					{ k: 'id', label: 'ID', type: 'text', req: true, hint: '他と重複しない識別子。例: work13' },
-					{ k: 'featured', label: '常時表示', type: 'bool', onLabel: '一覧に最初から表示する', offLabel: 'More Works の中に隠す', hint: 'オフにすると More Works を押すまで隠れる' },
+					{ k: 'featured', label: '常時表示', type: 'bool', default: true, onLabel: '一覧に最初から表示する', offLabel: 'More Works の中に隠す', hint: 'オフにすると More Works を押すまで隠れる' },
 					{ k: 'card.title', label: 'カードの見出し', type: 'text', req: true, hint: '一覧のタイルに出る短いタイトル' },
 					{ k: 'card.text', label: 'カードの説明', type: 'text', hint: '一行の説明。&lt;br /&gt; で改行できる' },
 					{ k: 'images', label: '画像', type: 'images', req: true, hint: '2 枚以上入れると自動でスライドショーになる' },
@@ -473,7 +591,7 @@
 					{ k: 'end', label: '終了', type: 'text', hint: '空にすると期間の終わりを表示しない（在学中・在職中など）' },
 					{ k: 'title', label: '見出し', type: 'text', req: true, hint: '例: 武蔵野大学' },
 					{ k: 'detail', label: '補足', type: 'text', hint: '例: データサイエンス学部' },
-					{ k: 'current', label: '現在も継続中', type: 'bool', onLabel: '継続中として表示する', offLabel: '終了した経歴', hint: '丸を塗りつぶし、「現在」バッジを付ける' }
+					{ k: 'current', label: '現在も継続中', type: 'bool', default: false, onLabel: '継続中として表示する', offLabel: '終了した経歴', hint: '丸を塗りつぶし、「現在」バッジを付ける' }
 				]
 			},
 			about: {
@@ -486,7 +604,7 @@
 					{ k: 'desc', label: '説明', type: 'textarea', req: true, hint: '&lt;br /&gt; で改行できる' },
 					{ k: 'icon', label: 'アイコン', type: 'text', req: true, hint: 'Simple Line Icons のクラス名。例: icon-user / icon-graduation / icon-camera' },
 					{ k: 'url', label: 'リンク先', type: 'text', hint: 'ページ内なら #works、外部なら https://…' },
-					{ k: 'external', label: '別タブで開く', type: 'bool', onLabel: '別タブで開く', offLabel: '同じタブで開く', hint: '外部サイトへのリンクならオンにする' }
+					{ k: 'external', label: '別タブで開く', type: 'bool', default: false, onLabel: '別タブで開く', offLabel: '同じタブで開く', hint: '外部サイトへのリンクならオンにする' }
 				]
 			},
 			social: {
@@ -518,34 +636,42 @@
 				template: () => ({ name: '', percent: 50, detail: '' }),
 				fields: [
 					{ k: 'name', label: '言語名', type: 'text', req: true, hint: '例: 韓国語' },
-					{ k: 'percent', label: '習熟度', type: 'number', req: true, min: 0, max: 100, hint: '円グラフの数字と連動する' },
+					{ k: 'percent', label: '習熟度', type: 'number', req: true, min: 0, max: 100, hint: '円グラフの中に出る数字' },
+					{ k: 'chart', label: 'グラフの塗り', type: 'number', min: 0, max: 100,
+					  hint: '<b>空のままなら習熟度と同じ。</b>数字はそのままに、輪の塗り具合だけ変えたいときに入れる' },
 					{ k: 'detail', label: '説明', type: 'textarea', req: true, hint: '例: 日常会話レベル' }
 				]
 			},
 			site: {
 				file: 'site.json', label: 'サイト設定', single: true,
 				fields: [
-					{ k: 'title', label: 'ページタイトル', type: 'text', req: true, hint: '検索結果の見出しになる。日本語で 30 文字前後が目安' },
-					{ k: 'description', label: '説明文', type: 'textarea', req: true, hint: '検索結果に出る説明。120 文字前後。名前の表記ゆれを入れておくと拾われやすい' },
-					{ k: 'siteName', label: 'サイト名', type: 'text', req: true, hint: 'OGP の og:site_name に使う' },
-					{ k: 'shortDescription', label: '短い説明', type: 'textarea', req: true, hint: 'SNS シェア時に出る説明' },
-					{ k: 'url', label: 'サイト URL', type: 'text', req: true, hint: 'ドメインを変えるときはここと src/CNAME の両方を直す' },
-					{ k: 'hero.name', label: '首屏：氏名', type: 'text', req: true },
-					{ k: 'hero.ruby', label: '首屏：ふりがな', type: 'text', hint: '氏名の上に小さく出る' },
-					{ k: 'hero.tagline', label: '首屏：見出し', type: 'text' },
-					{ k: 'hero.subtitle', label: '首屏：一言', type: 'text' },
-					{ k: 'hero.avatar', label: 'プロフィール画像', type: 'image', req: true },
-					{ k: 'hero.background', label: '首屏の背景画像', type: 'image', hint: '外部 URL でも、アップロードした画像でもよい' },
-					{ k: 'brand', label: 'ヘッダーのロゴ文字', type: 'text' },
-					{ k: 'sections.about', label: 'About の説明', type: 'textarea', hint: '&lt;br /&gt; で改行できる' },
-					{ k: 'sections.career', label: 'Career の説明', type: 'text' },
-					{ k: 'sections.skills', label: 'Skills の説明', type: 'text' },
-					{ k: 'sections.languages', label: '言語スキルの見出し', type: 'text' },
-					{ k: 'sections.works', label: 'Works の説明', type: 'textarea' },
-					{ k: 'sections.contact', label: 'Contact の見出し', type: 'text' },
-					{ k: 'copyrightName', label: '著作権表示の名前', type: 'text' },
-					{ k: 'copyrightFrom', label: '著作権の開始年', type: 'text' },
-					{ k: 'modalTitle', label: '作品モーダルの既定見出し', type: 'text' }
+					{ g: '首屏', k: 'hero.name', label: '氏名', type: 'text', req: true },
+					{ g: '首屏', k: 'hero.ruby', label: 'ふりがな', type: 'text', hint: '氏名の上に小さく出る' },
+					{ g: '首屏', k: 'hero.tagline', label: '見出し', type: 'text' },
+					{ g: '首屏', k: 'hero.subtitle', label: '一言', type: 'text' },
+					{ g: '首屏', k: 'hero.avatar', label: 'プロフィール画像', type: 'image', req: true },
+					{ g: '首屏', k: 'hero.background', label: '背景画像', type: 'image', hint: '外部 URL でも、アップロードした画像でもよい' },
+
+					{ g: '各セクションの説明文', k: 'sections.about', label: 'About', type: 'textarea', hint: '&lt;br /&gt; で改行できる' },
+					{ g: '各セクションの説明文', k: 'sections.career', label: 'Career', type: 'text' },
+					{ g: '各セクションの説明文', k: 'sections.skills', label: 'Skills', type: 'text' },
+					{ g: '各セクションの説明文', k: 'sections.languages', label: '言語スキルの見出し', type: 'text' },
+					{ g: '各セクションの説明文', k: 'sections.works', label: 'Works', type: 'textarea' },
+					{ g: '各セクションの説明文', k: 'sections.contact', label: 'Contact', type: 'text' },
+
+					{ g: '検索エンジン向け (SEO)', k: 'title', label: 'ページタイトル', type: 'text', req: true, counter: 30,
+					  hint: '検索結果の見出しになる。長すぎると途中で切られる' },
+					{ g: '検索エンジン向け (SEO)', k: 'description', label: '説明文', type: 'textarea', req: true, counter: 120,
+					  hint: '検索結果に出る説明。名前の表記ゆれを入れておくと拾われやすい' },
+					{ g: '検索エンジン向け (SEO)', k: 'shortDescription', label: 'SNS シェア用の短い説明', type: 'textarea', req: true, counter: 90 },
+					{ g: '検索エンジン向け (SEO)', k: 'siteName', label: 'サイト名', type: 'text', req: true, hint: 'OGP の og:site_name に使う' },
+					{ g: '検索エンジン向け (SEO)', k: 'url', label: 'サイト URL', type: 'text', req: true,
+					  hint: 'ドメインを変えるときは、ここと <code>src/CNAME</code> の両方を直す' },
+
+					{ g: 'その他', k: 'brand', label: 'ヘッダーのロゴ文字', type: 'text' },
+					{ g: 'その他', k: 'copyrightName', label: '著作権表示の名前', type: 'text' },
+					{ g: 'その他', k: 'copyrightFrom', label: '著作権の開始年', type: 'text' },
+					{ g: 'その他', k: 'modalTitle', label: '作品モーダルの既定見出し', type: 'text' }
 				]
 			},
 			achievements: {
@@ -584,7 +710,8 @@
 		// ==============================================================
 		// 状態
 		// ==============================================================
-		let store = {};                 // kind -> データ
+		let store = {};
+		let versions = {};              // ファイルごとの「読み込んだ時点の版」                 // kind -> データ
 		let kind = 'works';
 		let filterText = '';
 		let sel = null;                 // works/skills/languages: index / achievements: {c,i} または {c,col:true}
@@ -617,10 +744,12 @@
 		//   API 経由で読み書きする。そのため LAN の別端末からでも使えるし、
 		//   Chrome 以外のブラウザでも動く。
 		// ==============================================================
-		async function api(method, path, body, type) {
+		async function api(method, path, body, type, extraHeaders) {
+			const headers = Object.assign({}, extraHeaders || {});
+			if (body && type) headers['Content-Type'] = type;
 			const res = await fetch(path, {
 				method: method,
-				headers: body && type ? { 'Content-Type': type } : undefined,
+				headers: Object.keys(headers).length ? headers : undefined,
 				body: body
 			});
 			const text = await res.text();
@@ -633,7 +762,9 @@
 		async function loadAll() {
 			try {
 				const got = await api('GET', '/api/data');
-				for (const k of KINDS) store[k] = got[k] || [];
+				const data = got.data || got;             // 旧い形式にも一応備える
+				versions = got.versions || {};
+				for (const k of KINDS) store[k] = data[k] || [];
 				dirty.clear();
 				sel = null;
 				restoreView();
@@ -662,18 +793,38 @@
 			if (!dirty.size) { status('変更はありません'); return; }
 
 			const targets = [...dirty];
-			try {
-				for (const k of targets) {
-					await api('PUT', '/api/data/' + SCHEMAS[k].file,
-						JSON.stringify(normalizeAll(k)), 'application/json');
+			for (const k of targets) {
+				const file = SCHEMAS[k].file;
+				try {
+					const r = await api('PUT', '/api/data/' + file,
+						JSON.stringify(normalizeAll(k)), 'application/json',
+						{ 'X-Expected-Version': versions[file] || '' });
+					versions[file] = r.version || versions[file];
 					dirty.delete(k);
+				} catch (e) {
+					render();
+					// 読み込んだあとに他所で変わっていた場合は、黙って潰さず選ばせる
+					if (/変更されています/.test(e.message)) {
+						const force = confirm(e.message + '\n\n'
+							+ '［OK］このエディタの内容で上書きする\n'
+							+ '［キャンセル］保存をやめて、読み直す');
+						if (!force) {
+							status('保存を中止しました。「読み直す」で最新を取り込んでください', true);
+							return;
+						}
+						const r = await api('PUT', '/api/data/' + file,
+							JSON.stringify(normalizeAll(k)), 'application/json',
+							{ 'X-Expected-Version': '' });   // 版チェックを外して強制保存
+						versions[file] = r.version || '';
+						dirty.delete(k);
+						continue;
+					}
+					status('保存に失敗しました: ' + e.message, true);
+					return;
 				}
-				render();
-				status(targets.length + ' ファイルを保存しました');
-			} catch (e) {
-				render();
-				status('保存に失敗しました: ' + e.message, true);
 			}
+			render();
+			status(targets.length + ' ファイルを保存しました');
 		}
 
 		// 空の任意項目を落とし、スキーマの順にキーを並べ直す
@@ -690,8 +841,10 @@
 				return o;
 			}
 			if (S.grouped) {
-				return store[k].map((col) => ({
-					icon: col.icon, title: col.title,
+				// 列そのものに付いている未知のキーも残す
+				return store[k].map((col) => Object.assign({}, col, {
+					icon: col.icon,
+					title: col.title,
 					items: col.items.map((it) => pick(S.fields, it))
 				}));
 			}
@@ -700,10 +853,15 @@
 				if (k === 'works') {
 					if (it.featured === false) o.featured = false;
 					else o.featured = true;
-					// キーの並びを従来の JSON に合わせる
+					// キーの並びを従来の JSON に合わせる。
+					// 並べ替えたあと、既知でないキーも末尾に残す
+					//（pick() が拾ってくれたものをここで捨て直さない）
+					const known = ['id', 'featured', 'card', 'images', 'title', 'keywords', 'description', 'media'];
 					const ordered = {};
-					['id', 'featured', 'card', 'images', 'title', 'keywords', 'description', 'media']
-						.forEach((key) => { if (o[key] !== undefined) ordered[key] = o[key]; });
+					known.forEach((key) => { if (o[key] !== undefined) ordered[key] = o[key]; });
+					Object.keys(o).forEach((key) => {
+						if (!known.includes(key)) ordered[key] = o[key];
+					});
 					return ordered;
 				}
 				return o;
@@ -712,10 +870,23 @@
 
 		function pick(fields, it) {
 			const o = {};
+			// スキーマに載っていないキーも残す。
+			// エディタが知らないだけで、テンプレートが使っている可能性がある
+			const known = new Set(fields.map((f) => f.k.split('.')[0]));
 			for (const f of fields) {
 				let v = getPath(it, f.k);
 				if (f.type === 'media') v = (v || []).map(cleanMedia);
-				if (f.type === 'images') v = (v || []).map((im) => ({ src: im.src, alt: im.alt, width: +im.width, height: +im.height }));
+				if (f.type === 'images') {
+					v = (v || []).map((im) => {
+						const o = { src: im.src, alt: im.alt || '' };
+						// 空欄は null になる。+null は 0 なので、そのまま数値化すると
+						// width="0" が書き出されて画像が消える。正の数のときだけ入れる
+						const w = Number(im.width), h = Number(im.height);
+						if (Number.isFinite(w) && w > 0) o.width = w;
+						if (Number.isFinite(h) && h > 0) o.height = h;
+						return o;
+					});
+				}
 				// bool は true のときだけ書き出す。
 				// works の featured だけは false も明示したいので呼び出し側で上書きする
 				if (f.type === 'bool') {
@@ -724,6 +895,9 @@
 				}
 				if (isBlank(v)) continue;
 				setPath(o, f.k, v);
+			}
+			for (const k of Object.keys(it)) {
+				if (!known.has(k) && !isBlank(it[k])) o[k] = it[k];
 			}
 			return o;
 		}
@@ -750,9 +924,22 @@
 				lists.forEach((list, ci) => {
 					list.forEach((it, i) => {
 						for (const f of S.fields) {
-							if (!f.req) continue;
-							if (isBlank(getPath(it, f.k))) {
+							const v = getPath(it, f.k);
+							if (f.req && isBlank(v)) {
 								out.push('【' + S.label + '】' + (i + 1) + ' 件目の「' + f.label + '」が未入力です');
+								continue;
+							}
+							// min / max は HTML の属性を付けるだけでは守られない。
+							// 手入力でも貼り付けでも範囲外の値が入るので、保存前にここで弾く
+							if (f.type === 'number' && !isBlank(v)) {
+								const n = Number(v);
+								if (!Number.isFinite(n)) {
+									out.push('【' + S.label + '】' + (i + 1) + ' 件目の「' + f.label + '」が数値ではありません');
+								} else if (f.min !== undefined && n < f.min) {
+									out.push('【' + S.label + '】' + (i + 1) + ' 件目の「' + f.label + '」は ' + f.min + ' 以上にしてください（現在 ' + n + '）');
+								} else if (f.max !== undefined && n > f.max) {
+									out.push('【' + S.label + '】' + (i + 1) + ' 件目の「' + f.label + '」は ' + f.max + ' 以下にしてください（現在 ' + n + '）');
+								}
 							}
 						}
 					});
@@ -767,8 +954,8 @@
 			return out;
 		}
 
-		function touch() {
-			dirty.add(kind);
+		function touch(which) {
+			dirty.add(which || kind);
 			$('save').disabled = false;
 			renderTabs();
 			renderList();
@@ -919,15 +1106,84 @@
 			}
 		}
 
+		// 並べ替え中に「どの一覧のどこを掴んでいるか」を覚えておく。
+		// 別の列へ落とすと意味が変わってしまうので、同じ一覧の中だけで動かす。
+		let drag = null;
+
+		function clearDropMarks() {
+			$('list').querySelectorAll('.row').forEach((n) => {
+				n.classList.remove('drop-before', 'drop-after');
+			});
+		}
+
 		function itemRow(it, i, list, on, onClick, onMove) {
 			const S = SCHEMAS[kind];
 			const title = S.grouped ? (it.year ? it.year + '　' + (it.title || '') : (it.title || '(無題)')) : S.title(it);
 			const sub = S.grouped ? '' : (S.sub ? S.sub(it) : '');
-			const r = el('div', { className: 'row' + (on ? ' on' : '') });
+			const r = el('div', { className: 'row' + (on ? ' on' : ''), draggable: true });
+
+			r.append(el('span', { className: 'grip', textContent: '⠿', title: 'ドラッグで並べ替え' }));
 			r.append(el('span', { className: 't', textContent: title }));
 			if (sub) r.append(el('span', { className: 's', textContent: sub }));
 			r.append(moveBtns(list, i, onMove));
 			r.onclick = onClick;
+
+			r.addEventListener('dragstart', (e) => {
+				drag = { list: list, from: i };
+				e.dataTransfer.effectAllowed = 'move';
+				// Firefox はデータを入れないとドラッグが始まらない
+				e.dataTransfer.setData('text/plain', String(i));
+				r.classList.add('dragging');
+			});
+
+			r.addEventListener('dragend', () => {
+				r.classList.remove('dragging');
+				clearDropMarks();
+				drag = null;
+			});
+
+			r.addEventListener('dragover', (e) => {
+				if (!drag || drag.list !== list) return;   // 別の列へは落とさせない
+				e.preventDefault();
+				e.dataTransfer.dropEffect = 'move';
+				const rect = r.getBoundingClientRect();
+				const after = e.clientY > rect.top + rect.height / 2;
+				clearDropMarks();
+				r.classList.add(after ? 'drop-after' : 'drop-before');
+			});
+
+			r.addEventListener('dragleave', () => {
+				r.classList.remove('drop-before', 'drop-after');
+			});
+
+			r.addEventListener('drop', (e) => {
+				if (!drag || drag.list !== list) return;
+				e.preventDefault();
+				e.stopPropagation();
+				clearDropMarks();
+
+				const rect = r.getBoundingClientRect();
+				const after = e.clientY > rect.top + rect.height / 2;
+				let to = after ? i + 1 : i;
+				const from = drag.from;
+				if (from < to) to--;                       // 抜いた分だけ詰まる
+				if (from === to) { drag = null; return; }
+
+				const [moved] = list.splice(from, 1);
+				list.splice(to, 0, moved);
+
+                // 動かした項目を選択したままにする
+				if (SCHEMAS[kind].grouped) {
+					const c = store[kind].findIndex((col) => col.items === list);
+					sel = { c: c, i: to };
+				} else {
+					sel = to;
+				}
+				drag = null;
+				touch();
+				render();
+			});
+
 			return r;
 		}
 
@@ -965,7 +1221,21 @@
 				}));
 			}
 
-			for (const f of fields) p.append(fieldEl(f, item));
+			// f.g が指定されていれば、同じ見出しの項目をひと枠にまとめる
+			let group = null, box = p;
+			for (const f of fields) {
+				if (f.g !== group) {
+					group = f.g;
+					if (group) {
+						box = el('fieldset', { className: 'group-box' });
+						box.append(el('legend', { textContent: group }));
+						p.append(box);
+					} else {
+						box = p;
+					}
+				}
+				box.append(fieldEl(f, item));
+			}
 
 			if (!S.single && !(S.grouped && sel.col)) {
 				const bar = el('div', { style: 'margin-top:26px;display:flex;gap:10px;flex-wrap:wrap' });
@@ -1018,7 +1288,10 @@
 				input = el('input', { type: 'number', value: v == null ? '' : v, min: f.min, max: f.max });
 				input.oninput = () => { setPath(item, f.k, input.value === '' ? null : +input.value); touch(); };
 			} else if (f.type === 'bool') {
-				input = el('input', { type: 'checkbox', checked: v !== false });
+				// 値が無いときはスキーマの既定値に従う。
+				// 一律 `v !== false` にすると、キーが落ちている項目まで ON に見えてしまう
+				const on = (v === undefined || v === null) ? f.default === true : v !== false;
+				input = el('input', { type: 'checkbox', checked: on });
 				input.style.width = 'auto';
 				input.onchange = () => { setPath(item, f.k, input.checked); touch(); };
 				const w = el('label', { style: 'display:flex;gap:8px;align-items:center;font-weight:400' });
@@ -1053,8 +1326,31 @@
 			}
 
 			if (f.req && isBlank(v)) input.classList.add('invalid');
-			input.addEventListener('blur', () => renderForm());
+
+			// blur で作り直すと、ボタンを押そうとした瞬間に
+			// そのボタンが DOM から消えて click が成立しなくなる。
+			// 未入力の見た目だけをその場で更新する
+			const refreshInvalid = () => {
+				if (!f.req) return;
+				input.classList.toggle('invalid', isBlank(getPath(item, f.k)));
+			};
+			input.addEventListener('input', refreshInvalid);
+			input.addEventListener('blur', refreshInvalid);
 			box.append(input);
+
+			// 検索結果での見え方に関わる項目は、目安の文字数を出す
+			if (f.counter) {
+				const c = el('div', { className: 'counter' });
+				const update = () => {
+					const n = (input.value || '').length;
+					c.textContent = n + ' / ' + f.counter + ' 文字';
+					c.className = 'counter' + (n > f.counter ? ' over' : n > f.counter * 0.8 ? ' near' : '');
+				};
+				input.addEventListener('input', update);
+				update();
+				box.append(c);
+			}
+
 			if (f.hint) box.append(el('div', { className: 'hint', innerHTML: f.hint }));
 			return box;
 		}
@@ -1098,6 +1394,9 @@
 		// 画像を 1 枚選ばせ、サーバの src/img/ へ送る。
 		// 実寸は送る前に手元で測るので、幅・高さの入力も要らない。
 		function pickImage(onDone) {
+			// 送信の途中でタブを切り替えられても、
+			// 変更の印は「選んだときのタブ」に付ける
+			const owner = kind;
 			const input = el('input', { type: 'file', accept: 'image/*' });
 			input.style.display = 'none';
 			document.body.append(input);
@@ -1109,11 +1408,26 @@
 				try {
 					status('アップロード中… ' + file.name);
 					const dim = await readSize(file);
-					const r = await api('POST', '/api/image/' + encodeURIComponent(file.name),
-						file, file.type || 'application/octet-stream');
-					onDone({ src: r.src, width: dim.w, height: dim.h });
+					const path = '/api/image/' + encodeURIComponent(file.name);
+					const type = file.type || 'application/octet-stream';
+
+					let r;
+					try {
+						r = await api('POST', path, file, type);
+					} catch (e) {
+						// 同名ファイルがあると 409 で止まる。ここで初めて確認を出す
+						if (!/既にあります/.test(e.message)) throw e;
+						if (!confirm('src/img/' + file.name + ' は既にあります。\n'
+							+ '上書きすると、この画像を使っている他の作品にも影響します。\n上書きしますか？')) {
+							status('アップロードを取りやめました');
+							return;
+						}
+						r = await api('POST', path + '?overwrite=1', file, type);
+					}
+
+					onDone({ src: r.src, width: dim.w, height: dim.h, owner: owner });
 					status('src/' + r.src + ' に保存しました（' + dim.w + '×' + dim.h + '）'
-						+ (r.overwritten ? ' ※ 同名ファイルを上書き' : ''));
+						+ (r.overwritten ? ' ※ 上書きしました' : ''));
 				} catch (e) {
 					status('画像を追加できません: ' + e.message, true);
 				}
@@ -1133,7 +1447,7 @@
 			const pick = el('button', { className: 'btn sm', textContent: '画像を選ぶ…' });
 			pick.onclick = () => pickImage((r) => {
 				setPath(item, f.k, r.src);
-				touch();
+				touch(r.owner);
 				renderForm();
 			});
 			bar.append(pick);
@@ -1155,7 +1469,7 @@
 			input.remove();
 			pickImage((r) => {
 				list.push({ src: r.src, alt: '', width: r.width, height: r.height });
-				touch();
+				touch(r.owner);
 				renderForm();
 			});
 		}
@@ -1206,7 +1520,15 @@
 					s.append(txt('表示文字', m.text || '', (x) => { m.text = x; touch(); }, '空なら URL をそのまま表示する（任意）'));
 				} else {
 					const def = MEDIA_TYPES[m.type] || MEDIA_TYPES.drive;
-					s.append(txt('ID', m.id || '', (x) => { m.id = extractId(x, m.type); touch(); renderForm(); }, def.idHint + '（URL をそのまま貼っても ID を取り出します）'));
+					// 入力のたびに renderForm() すると、打っている最中の入力欄ごと
+					// 作り直されてフォーカスが飛ぶ。URL からの ID 抽出は入力後に回す
+					s.append(txt('ID', m.id || '',
+						(x) => { m.id = x; touch(); },
+						def.idHint + '（URL をそのまま貼れば、入力後に ID だけ取り出します）',
+						(x) => {
+							const picked = extractId(x, m.type);
+							if (picked !== x) { m.id = picked; touch(); renderForm(); }
+						}));
 					s.append(num('高さ', m.height, (x) => { m.height = x; touch(); }, '空なら ' + def.defH + 'px（任意）'));
 				}
 				wrap.append(s);
@@ -1229,11 +1551,16 @@
 		}
 
 		// ---------- 小さな入力部品 ----------
-		function txt(label, value, on, hint) {
+		function txt(label, value, on, hint, onCommit) {
 			const b = el('div', { style: 'margin-bottom:9px' });
 			b.append(el('label', { textContent: label, style: 'display:block;font-size:12px;font-weight:600;margin-bottom:3px' }));
 			const i = el('input', { type: 'text', value: value });
 			i.oninput = () => on(i.value);
+			if (onCommit) {
+				// 入力が一段落したところで整形する（打っている最中には触らない）
+				i.addEventListener('change', () => onCommit(i.value));
+				i.addEventListener('blur', () => onCommit(i.value));
+			}
 			b.append(i);
 			if (hint) b.append(el('div', { className: 'hint', textContent: hint }));
 			return b;

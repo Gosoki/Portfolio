@@ -5,8 +5,10 @@
   "private": true,
   "scripts": {
     "start": "eleventy --serve --port=8233",
-    "build": "eleventy",
-    "clean": "rm -rf _site"
+    "build": "npm run clean && ELEVENTY_ENV=production eleventy",
+    "clean": "rm -rf _site",
+    "check-links": "node tools/check-links.js",
+    "subset-fonts": "node tools/subset-fonts.js"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.1.2"

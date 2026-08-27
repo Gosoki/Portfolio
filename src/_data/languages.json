@@ -2,11 +2,13 @@
   {
     "name": "中国語",
     "percent": 95,
+    "chart": 90,
     "detail": "母語である"
   },
   {
     "name": "広東語",
     "percent": 95,
+    "chart": 90,
     "detail": "母語である"
   },
   {

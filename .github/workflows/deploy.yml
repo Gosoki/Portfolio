@@ -5,10 +5,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# 権限はジョブごとに最小限だけ与える。
+# npm ci を走らせる build に本番デプロイ権限を持たせない
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # 同時に走らないようにする（デプロイ中の実行はキャンセルしない）
 concurrency:
@@ -18,6 +18,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -28,11 +30,11 @@ jobs:
 
       - run: npm ci
 
+      # package.json の build を使う。
+      # ここで直接 eleventy を叩くと、手元と本番で手順がずれる
+      # （clean と ELEVENTY_ENV=production は build 側に入っている）
       - name: Build with Eleventy
-        run: npx @11ty/eleventy
-        env:
-          # 編集用エディタ (tools/) を公開ビルドから外す
-          ELEVENTY_ENV: production
+        run: npm run build
 
       - uses: actions/configure-pages@v5
 
@@ -43,6 +45,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
