@@ -25,7 +25,8 @@
       {
         "type": "drive",
         "id": "1vq7bUfrHUa5AmWhWucqG0xiS6KuBnbcL",
-        "height": 480
+        "height": 480,
+        "unavailable": true
       }
     ]
   },
@@ -55,11 +56,13 @@
     "media": [
       {
         "type": "drive",
-        "id": "193msODsMNqJbdq1FtrEKVJbLLAH_SdnH"
+        "id": "193msODsMNqJbdq1FtrEKVJbLLAH_SdnH",
+        "unavailable": true
       },
       {
         "type": "drive",
-        "id": "1IIFRZd9HebhUJwakgFGDgOLFs7IQdcJi"
+        "id": "1IIFRZd9HebhUJwakgFGDgOLFs7IQdcJi",
+        "unavailable": true
       }
     ]
   },
@@ -89,7 +92,8 @@
     "media": [
       {
         "type": "slides",
-        "id": "2PACX-1vQRXYBx1NjM0vkJg9M7z9jbHFiLxZ7pj1zdPCG-9x0EsBSQtyh4s0u9ca0zDi7qqiJERjiTvHSOhO4t"
+        "id": "2PACX-1vQRXYBx1NjM0vkJg9M7z9jbHFiLxZ7pj1zdPCG-9x0EsBSQtyh4s0u9ca0zDi7qqiJERjiTvHSOhO4t",
+        "unavailable": true
       }
     ]
   },
@@ -124,19 +128,23 @@
     "media": [
       {
         "type": "drive",
-        "id": "1wxD63I2FtdtZ3CYMkgwtdqjdz8gY21Rm"
+        "id": "1wxD63I2FtdtZ3CYMkgwtdqjdz8gY21Rm",
+        "unavailable": true
       },
       {
         "type": "drive",
-        "id": "1-0BEiPp-eOj4RcMBEPhoromPkDPg5IJd"
+        "id": "1-0BEiPp-eOj4RcMBEPhoromPkDPg5IJd",
+        "unavailable": true
       },
       {
         "type": "drive",
-        "id": "1oIA8qAhPHjKyCPDAe-mXpz51vRCtGA_-"
+        "id": "1oIA8qAhPHjKyCPDAe-mXpz51vRCtGA_-",
+        "unavailable": true
       },
       {
         "type": "drive",
-        "id": "1SWtT2yDnEv7U2USr7InhcRYeInXd3-M4"
+        "id": "1SWtT2yDnEv7U2USr7InhcRYeInXd3-M4",
+        "unavailable": true
       }
     ]
   },
@@ -166,15 +174,18 @@
     "media": [
       {
         "type": "drive",
-        "id": "1WI7qfa_57NHA9gM-SsbY0tggZmwxyp9y"
+        "id": "1WI7qfa_57NHA9gM-SsbY0tggZmwxyp9y",
+        "unavailable": true
       },
       {
         "type": "drive",
-        "id": "1sJDm6QqReDRwQhbL2Y2Llt2vKtNH5PYu"
+        "id": "1sJDm6QqReDRwQhbL2Y2Llt2vKtNH5PYu",
+        "unavailable": true
       },
       {
         "type": "drive",
-        "id": "1I6DQbvVyWVN77WokjLwKUGY2sJz9H52e"
+        "id": "1I6DQbvVyWVN77WokjLwKUGY2sJz9H52e",
+        "unavailable": true
       }
     ]
   },
@@ -204,7 +215,8 @@
     "media": [
       {
         "type": "drive",
-        "id": "1n56Axwf5X6SCS0xhRXNjOZOuZz3Y-01n"
+        "id": "1n56Axwf5X6SCS0xhRXNjOZOuZz3Y-01n",
+        "unavailable": true
       }
     ]
   },
@@ -238,7 +250,8 @@
       },
       {
         "type": "slides",
-        "id": "2PACX-1vS8aHNPEY4vOi0XkzvA-muaR3f3vj7gMDsa5LI9OOmPu_v-tiEmB7OTex5s0Kr6Yntgfg2WlVqde9ah"
+        "id": "2PACX-1vS8aHNPEY4vOi0XkzvA-muaR3f3vj7gMDsa5LI9OOmPu_v-tiEmB7OTex5s0Kr6Yntgfg2WlVqde9ah",
+        "unavailable": true
       }
     ]
   },
@@ -270,15 +283,18 @@
         "type": "link",
         "label": "Docs",
         "url": "https://docs.google.com/document/d/1uWJgW5eTkQLDrfBglm0eKJ8mkShTvANUPtwYkIDh8-w",
-        "text": "Google ドキュメント"
+        "text": "Google ドキュメント",
+        "unavailable": true
       },
       {
         "type": "drive",
-        "id": "1pdDVVFX0_dZJV5vNlMIDTw1lntbxo1_7"
+        "id": "1pdDVVFX0_dZJV5vNlMIDTw1lntbxo1_7",
+        "unavailable": true
       },
       {
         "type": "doc",
-        "id": "2PACX-1vQnDVJNZdfxq1Eo_zItylFgw-_tgZ8yVugIsK5fv474be7yWwqP5IN8Q0IhVAj51t-Ah2XLcB75Btnu"
+        "id": "2PACX-1vQnDVJNZdfxq1Eo_zItylFgw-_tgZ8yVugIsK5fv474be7yWwqP5IN8Q0IhVAj51t-Ah2XLcB75Btnu",
+        "unavailable": true
       }
     ]
   },
@@ -313,7 +329,8 @@
       },
       {
         "type": "slides",
-        "id": "2PACX-1vSK3jOC59-0altlkVPd7fcZTPz3mzmEKzUO-Q0pd2rMaxNEm7l-z4Y-bngBzFEhjm60Uud2x1XMCI1I"
+        "id": "2PACX-1vSK3jOC59-0altlkVPd7fcZTPz3mzmEKzUO-Q0pd2rMaxNEm7l-z4Y-bngBzFEhjm60Uud2x1XMCI1I",
+        "unavailable": true
       }
     ]
   },
@@ -343,7 +360,8 @@
     "media": [
       {
         "type": "drive",
-        "id": "1JTrzINzcjuqR6LdVXcrOl1SVuL2yitcU"
+        "id": "1JTrzINzcjuqR6LdVXcrOl1SVuL2yitcU",
+        "unavailable": true
       }
     ]
   },
@@ -372,11 +390,13 @@
     "media": [
       {
         "type": "drive",
-        "id": "1AlTohyidO204BKmVFkQIxOlv_MoZXpGy"
+        "id": "1AlTohyidO204BKmVFkQIxOlv_MoZXpGy",
+        "unavailable": true
       },
       {
         "type": "slides",
-        "id": "2PACX-1vSw2RV8JmuC6pLHmIHm_JxgelkYlaiLUA0Lc_Ch8Ks2Y-QP8KcV2zS589Da5GgkwAbCzkOwgyyElIdP"
+        "id": "2PACX-1vSw2RV8JmuC6pLHmIHm_JxgelkYlaiLUA0Lc_Ch8Ks2Y-QP8KcV2zS589Da5GgkwAbCzkOwgyyElIdP",
+        "unavailable": true
       }
     ]
   },
@@ -406,7 +426,8 @@
     "media": [
       {
         "type": "slides",
-        "id": "2PACX-1vSFv5E1IpDL3H8DlSV1P84NCrOlxlqTD3vhZO1n1ecHXBP7ZeJXz_qjlYidezIAOStiZcYPDXcV730o"
+        "id": "2PACX-1vSFv5E1IpDL3H8DlSV1P84NCrOlxlqTD3vhZO1n1ecHXBP7ZeJXz_qjlYidezIAOStiZcYPDXcV730o",
+        "unavailable": true
       }
     ]
   }

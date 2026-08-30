@@ -8,7 +8,8 @@
     "build": "npm run clean && ELEVENTY_ENV=production eleventy",
     "clean": "rm -rf _site",
     "check-links": "node tools/check-links.js",
-    "subset-fonts": "node tools/subset-fonts.js"
+    "subset-fonts": "node tools/subset-fonts.js",
+    "mark-links": "node tools/check-links.js --embeds --mark"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.1.2"

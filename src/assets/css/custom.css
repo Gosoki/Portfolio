@@ -1195,3 +1195,33 @@ figure.effect-bubba:hover h3 {
 		left: -100%;
 	}
 }
+
+/* 大学アカウントの失効で見られなくなった資料への断り書き。
+   埋め込み自体は残してあるので（復旧したら印を外すだけで戻る）、
+   その手前に置いて、枠に「見つかりません」と出ても戸惑わせない。 */
+.work-notice {
+	margin: 0 0 18px;
+	padding: 11px 15px;
+	border-left: 3px solid #d9a441;
+	border-radius: 4px;
+	background-color: #fdf6e8;
+	color: #6b5424;
+	font-size: 13.5px;
+	line-height: 1.7;
+	text-align: left;
+}
+
+/* 中身が出ない枠は、隣の生きている資料と見分けが付くように控えめにする */
+.work-media iframe.is-unavailable {
+	opacity: .55;
+	filter: grayscale(1);
+}
+
+/* 到達できないリンクも、生きているものと見分けが付くようにする */
+.work-link-row.is-unavailable {
+	opacity: .6;
+}
+
+.work-link-row.is-unavailable a {
+	text-decoration: line-through;
+}

@@ -9,6 +9,11 @@
  *
  *   node tools/check-links.js          全部調べる
  *   node tools/check-links.js --embeds 作品の埋め込みだけ
+ *   node tools/check-links.js --mark   結果を works.json の unavailable に反映する
+ *
+ * --mark を付けると、到達できなかった埋め込みに unavailable: true を付け、
+ * 復旧したものからは外す。印の付いた資料があるとモーダルにお断りが出る。
+ * 埋め込み自体は消さないので、復旧すればそのまま表示に戻る。
  *
  * 判定について:
  *   ここは「ログインしていない人から見えるか」を調べている。
@@ -25,6 +30,7 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
 	+ '(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 
 const embedsOnly = process.argv.includes('--embeds');
+const markResults = process.argv.includes('--mark');
 
 function read(name) {
 	return JSON.parse(fs.readFileSync(path.join(DATA, name), 'utf8'));
@@ -111,6 +117,30 @@ async function probe(url) {
 			console.log(`  ${mark} ${String(t.where).padEnd(8)} ${String(t.kind).padEnd(8)} `
 				+ `${r.ok ? 'HTTP ' + r.code : (r.err || 'HTTP ' + r.code)}  ${t.url.slice(0, 52)}`);
 		});
+	}
+
+	// --mark: 調べた結果を works.json に反映する
+	if (markResults) {
+		const worksPath = path.join(DATA, 'works.json');
+		const works = JSON.parse(fs.readFileSync(worksPath, 'utf8'));
+		const deadUrls = new Set(dead.map((d) => d.url));
+		let added = 0, removed = 0;
+
+		for (const w of works) {
+			for (const m of w.media || []) {
+				const u = embedUrl(m);
+				if (!u || !/^https?:/.test(u)) continue;
+				if (deadUrls.has(u)) {
+					if (!m.unavailable) { m.unavailable = true; added++; }
+				} else if (m.unavailable) {
+					delete m.unavailable;
+					removed++;
+				}
+			}
+		}
+		fs.writeFileSync(worksPath, JSON.stringify(works, null, 2) + '\n');
+		console.log('');
+		console.log(`  works.json を更新: 印を付けた ${added} 件 / 外した ${removed} 件`);
 	}
 
 	console.log('');

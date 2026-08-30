@@ -903,14 +903,17 @@
 		}
 
 		function cleanMedia(m) {
+			let o;
 			if (m.type === 'link') {
-				const o = { type: 'link', label: m.label, url: m.url };
+				o = { type: 'link', label: m.label, url: m.url };
 				if (m.text && m.text !== m.url) o.text = m.text;
-				return o;
+			} else {
+				o = { type: m.type, id: m.id };
+				const def = MEDIA_TYPES[m.type].defH;
+				if (m.height && +m.height !== def) o.height = +m.height;
 			}
-			const o = { type: m.type, id: m.id };
-			const def = MEDIA_TYPES[m.type].defH;
-			if (m.height && +m.height !== def) o.height = +m.height;
+			// 「見られない」印は true のときだけ残す
+			if (m.unavailable === true) o.unavailable = true;
 			return o;
 		}
 
@@ -1513,6 +1516,23 @@
 				rm.onclick = () => { list.splice(i, 1); touch(); renderForm(); };
 				head.append(rm);
 				s.append(head);
+
+				// 到達できない資料に印を付けると、モーダルにお断りが出る。
+				// 埋め込み自体は残るので、復旧したらこの印を外すだけで元に戻る
+				{
+					const nb = el('div', { style: 'margin-bottom:9px' });
+					const cb = el('input', { type: 'checkbox', checked: m.unavailable === true });
+					cb.style.width = 'auto';
+					cb.onchange = () => {
+						if (cb.checked) m.unavailable = true; else delete m.unavailable;
+						touch();
+						renderForm();
+					};
+					const lb = el('label', { style: 'display:flex;gap:8px;align-items:center;font-size:12px;font-weight:600' });
+					lb.append(cb, m.unavailable ? '現在は見られない（お断りを表示）' : '正常に見られる');
+					nb.append(lb);
+					s.append(nb);
+				}
 
 				if (m.type === 'link') {
 					s.append(txt('ラベル', m.label || '', (x) => { m.label = x; touch(); }, '例: Demo / Docs'));

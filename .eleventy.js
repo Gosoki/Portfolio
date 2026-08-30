@@ -95,7 +95,17 @@ module.exports = function (eleventyConfig) {
 	// こうしないと、隠してあるだけの 12 作品ぶんの iframe を
 	// ページを開いた瞬間に全部読みに行ってしまう。
 	eleventyConfig.addFilter("embedHtml", function (media, workTitle) {
-		return (media || [])
+		const items = media || [];
+
+		// 大学アカウントの失効で見られなくなった資料がある作品には、
+		// 一言添えてから埋め込みを並べる。
+		// 埋め込み自体は消さない（復旧したら unavailable を外すだけで戻る）。
+		const notice = items.some((m) => m.unavailable)
+			? '<p class="work-notice">大学のアカウントが失効したため、' +
+			  '一部の資料は現在ご覧いただけません。復旧を進めています。</p>'
+			: "";
+
+		return notice + items
 			.map((item, index) => {
 				const where = `works.json の「${workTitle}」の ${index + 1} 番目の埋め込み`;
 
@@ -115,25 +125,29 @@ module.exports = function (eleventyConfig) {
 				switch (item.type) {
 					case "link":
 						return (
-							`<div class="work-link-row"><b>${attr(item.label)}:</b> ` +
+							`<div class="work-link-row${item.unavailable ? " is-unavailable" : ""}">` +
+							`<b>${attr(item.label)}:</b> ` +
 							`<a href="${attr(item.url)}" target="_blank" rel="noopener noreferrer">` +
 							`${attr(item.text || item.url)}</a></div>`
 						);
 					case "drive":
 						return (
 							`<iframe data-src="https://drive.google.com/file/d/${id}/preview" ` +
-							`height="${height}" allow="autoplay" allowfullscreen loading="lazy" title="${title}"></iframe>`
+							`height="${height}" allow="autoplay" allowfullscreen loading="lazy" ` +
+							`title="${title}"${item.unavailable ? ' class="is-unavailable"' : ""}></iframe>`
 						);
 					case "slides":
 						return (
 							`<iframe data-src="https://docs.google.com/presentation/d/e/${id}` +
 							`/embed?start=false&amp;loop=false&amp;delayms=3000" ` +
-							`height="${height}" allowfullscreen loading="lazy" title="${title}"></iframe>`
+							`height="${height}" allowfullscreen loading="lazy" ` +
+							`title="${title}"${item.unavailable ? ' class="is-unavailable"' : ""}></iframe>`
 						);
 					case "doc":
 						return (
 							`<iframe data-src="https://docs.google.com/document/d/e/${id}/pub?embedded=true" ` +
-							`height="${height}" loading="lazy" title="${title}"></iframe>`
+							`height="${height}" loading="lazy" ` +
+							`title="${title}"${item.unavailable ? ' class="is-unavailable"' : ""}></iframe>`
 						);
 					default:
 						throw new Error(
